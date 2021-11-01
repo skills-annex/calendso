@@ -6,12 +6,12 @@
     "analyze": "ANALYZE=true next build",
     "analyze:server": "BUNDLE_ANALYZE=server next build",
     "analyze:browser": "BUNDLE_ANALYZE=browser next build",
-    "dev": "next dev",
+    "dev": "env-cmd -f .env.local next dev -p 3003",
     "db-up": "docker-compose up -d",
     "db-migrate": "yarn prisma migrate dev",
     "db-seed": "yarn ts-node scripts/seed.ts",
     "db-nuke": "docker-compose down --volumes --remove-orphans",
-    "dx": "cross-env BASE_URL=http://localhost:3000 JWT_SECRET=secret DATABASE_URL=postgresql://postgres:@localhost:5450/calendso run-s db-up db-migrate db-seed dev",
+    "dx": "cross-env BASE_URL=http://localhost:3003 JWT_SECRET=secret DATABASE_URL=postgresql://postgres:@localhost:5450/calendso run-s db-up db-migrate db-seed dev",
     "test": "jest",
     "test-playwright": "jest --config jest.playwright.config.js",
     "test-codegen": "yarn playwright codegen http://localhost:3000",
@@ -23,7 +23,9 @@
     "pre-commit": "lint-staged",
     "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
     "prepare": "husky install",
-    "check-changed-files": "yarn ts-node scripts/ts-check-changed-files.ts"
+    "check-changed-files": "yarn ts-node scripts/ts-check-changed-files.ts",
+    "prisma-migrate": "env-cmd -f .env.local npx prisma migrate dev",
+    "prisma-studio": "env-cmd -f .env.local npx prisma studio"
   },
   "engines": {
     "node": ">=14.x",
@@ -61,6 +63,7 @@
     "classnames": "^2.3.1",
     "dayjs": "^1.10.6",
     "dayjs-business-time": "^1.0.4",
+    "env-cmd": "^10.1.0",
     "googleapis": "^84.0.0",
     "handlebars": "^4.7.7",
     "ical.js": "^1.4.0",
