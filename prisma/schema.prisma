@@ -72,6 +72,7 @@ enum UserPlan {
 
 model User {
   id                  Int                @id @default(autoincrement())
+  thetisId            String?            @unique
   username            String?            @unique
   name                String?
   email               String             @unique
@@ -175,7 +176,7 @@ model DailyEventReference {
   dailyurl   String   @default("dailycallurl")
   dailytoken String   @default("dailytoken")
   booking    Booking? @relation(fields: [bookingId], references: [id])
-  bookingId  Int?
+  bookingId  Int?     @unique
 }
 
 model Booking {
