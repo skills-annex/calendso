@@ -80,7 +80,7 @@ model User {
   password            String?
   bio                 String?
   avatar              String?
-  timeZone            String             @default("Europe/London")
+  timeZone            String             @default("America/Los_Angeles")
   weekStart           String             @default("Sunday")
   startTime           Int                @default(0)
   endTime             Int                @default(1440)
