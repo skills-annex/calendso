@@ -38,14 +38,14 @@ export const ALL_INTEGRATIONS = [
     description: "For personal and business calendars",
     variant: "calendar",
   },
-  {
+  /*   {
     installed: !!(process.env.MS_GRAPH_CLIENT_ID && process.env.MS_GRAPH_CLIENT_SECRET),
     type: "office365_calendar",
     title: "Office 365 / Outlook.com Calendar",
     imageSrc: "integrations/outlook.svg",
     description: "For personal and business calendars",
     variant: "calendar",
-  },
+  }, */
   {
     installed: !!(process.env.ZOOM_CLIENT_ID && process.env.ZOOM_CLIENT_SECRET),
     type: "zoom_video",
@@ -62,14 +62,14 @@ export const ALL_INTEGRATIONS = [
     description: "Video Conferencing",
     variant: "conferencing",
   },
-  {
+  /*   {
     installed: true,
     type: "caldav_calendar",
     title: "CalDav Server",
     imageSrc: "integrations/caldav.svg",
     description: "For personal and business calendars",
     variant: "calendar",
-  },
+  }, */
   {
     installed: true,
     type: "apple_calendar",
