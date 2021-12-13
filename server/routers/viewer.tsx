@@ -104,6 +104,7 @@ const loggedInViewerRouter = createProtectedRouter()
         },
         select: {
           id: true,
+          email: true,
           username: true,
           name: true,
           startTime: true,
@@ -235,8 +236,9 @@ const loggedInViewerRouter = createProtectedRouter()
           eventTypes: membership.team.eventTypes,
         }))
       );
-
-      const canAddEvents = user.plan !== "FREE" || eventTypeGroups[0].eventTypes.length < 1;
+      
+      const isAdminUser = process.env.THETIS_ADMIN_USER_EMAILS?.split(";").includes(user.email);
+      const canAddEvents = isAdminUser // user.plan !== "FREE" || eventTypeGroups[0].eventTypes.length < 1;
 
       return {
         viewer: {
