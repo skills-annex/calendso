@@ -168,7 +168,14 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async redirect(url, baseUrl) {
+      if (process.env.THETIS_SITE_HOST && url.startsWith(process.env.THETIS_SITE_HOST)) {
+        return url;
+      } else {
+        return baseUrl;
+      }
+    },
+    async jwt(token, user) {
       if (user) {
         token.id = user.id;
         token.username = user.username;
