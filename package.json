@@ -30,7 +30,8 @@
     "check-changed-files": "yarn ts-node scripts/ts-check-changed-files.ts",
     "prisma-migrate": "env-cmd -f .env.local npx prisma migrate dev",
     "prisma-studio": "env-cmd -f .env.local npx prisma studio",
-    "prisma-migrate:staging": "env-cmd -f .env.staging.local npx prisma migrate deploy"
+    "prisma-migrate:staging": "env-cmd -f .env.staging.local npx prisma migrate deploy",
+    "prisma-studio:staging": "env-cmd -f .env.staging.local npx prisma studio"
   },
   "engines": {
     "node": ">=14.x",
@@ -69,6 +70,7 @@
     "classnames": "^2.3.1",
     "dayjs": "^1.10.6",
     "dayjs-business-time": "^1.0.4",
+    "dotenv": "^10.0.0",
     "env-cmd": "^10.1.0",
     "googleapis": "^84.0.0",
     "handlebars": "^4.7.7",
