@@ -34,9 +34,11 @@
     "prisma-studio:staging": "env-cmd -f .env.staging.local npx prisma studio"
   },
   "engines": {
-    "node": ">=14.x",
-    "yarn": ">=1.19.0 < 2.0.0"
+    "node": "=14.18.x",
+    "yarn": "=1.22.x",
+    "npm": "please-use-yarn"
   },
+  "engineStrict": true,
   "dependencies": {
     "@daily-co/daily-js": "^0.21.0",
     "@headlessui/react": "^1.4.2",
