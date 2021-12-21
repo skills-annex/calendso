@@ -3,12 +3,11 @@
 
 datasource db {
   provider = "postgresql"
-  url      = "postgres://yhpnohcsaauxek:b97fec054ec477dc2d53e3452b8789c50bbfd5cab16d90c742254619b5ee182a@ec2-3-218-158-102.compute-1.amazonaws.com:5432/dfkq7iek7ash20"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["selectRelationCount"]
+  provider = "prisma-client-js"
 }
 
 enum SchedulingType {
