@@ -20,7 +20,7 @@
     "test-playwright": "jest --config jest.playwright.config.js",
     "test-codegen": "yarn playwright codegen http://localhost:3000",
     "type-check": "tsc --pretty --noEmit",
-    "build": "next build",
+    "build": "npx prisma generate && npx prisma migrate deploy && next build",
     "start": "next start",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
     "postinstall": "prisma generate",
@@ -29,7 +29,8 @@
     "prepare": "husky install",
     "check-changed-files": "yarn ts-node scripts/ts-check-changed-files.ts",
     "prisma-migrate": "env-cmd -f .env.local npx prisma migrate dev",
-    "prisma-studio": "env-cmd -f .env.local npx prisma studio"
+    "prisma-studio": "env-cmd -f .env.local npx prisma studio",
+    "prisma-migrate:staging": "env-cmd -f .env.staging.local npx prisma migrate deploy"
   },
   "engines": {
     "node": ">=14.x",
