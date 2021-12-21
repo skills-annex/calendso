@@ -3,7 +3,7 @@
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgres://yhpnohcsaauxek:b97fec054ec477dc2d53e3452b8789c50bbfd5cab16d90c742254619b5ee182a@ec2-3-218-158-102.compute-1.amazonaws.com:5432/dfkq7iek7ash20"
 }
 
 generator client {
@@ -84,21 +84,21 @@ model DestinationCalendar {
 }
 
 model User {
-  id                  Int                @id @default(autoincrement())
-  thetisId            String?            @unique
-  username            String?            @unique
+  id                  Int                  @id @default(autoincrement())
+  thetisId            String?              @unique
+  username            String?              @unique
   name                String?
   email               String               @unique
   emailVerified       DateTime?
   password            String?
   bio                 String?
   avatar              String?
-  timeZone            String             @default("America/Los_Angeles")
-  weekStart           String             @default("Sunday")
-  startTime           Int                @default(0)
-  endTime             Int                @default(1440)
-  bufferTime          Int                @default(0)
-  hideBranding        Boolean            @default(false)
+  timeZone            String               @default("America/Los_Angeles")
+  weekStart           String               @default("Sunday")
+  startTime           Int                  @default(0)
+  endTime             Int                  @default(1440)
+  bufferTime          Int                  @default(0)
+  hideBranding        Boolean              @default(false)
   theme               String?
   createdDate         DateTime             @default(now()) @map(name: "created")
   eventTypes          EventType[]          @relation("user_eventtype")
