@@ -87,8 +87,8 @@ export default function Login({ csrfToken }: inferSSRProps<typeof getServerSideP
       )}
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <img className="h-6 mx-auto" src="/calendso-logo-white-word.svg" alt="Cal.com Logo" />
-        <h2 className="mt-6 text-3xl font-bold text-center font-cal text-neutral-900">
+        <img className="h-6 mx-auto" src="/the-skills-logo-black.svg" alt="The Skills Logo" />
+        <h2 className="font-cal mt-6 text-center text-3xl font-bold text-neutral-900">
           {t("sign_in_account")}
         </h2>
       </div>
@@ -177,7 +177,7 @@ export default function Login({ csrfToken }: inferSSRProps<typeof getServerSideP
         </div>
         <div className="mt-4 text-sm text-center text-neutral-600">
           {t("dont_have_an_account")} {/* replace this with your account creation flow */}
-          <a href={`${WEBSITE_URL}/signup`} className="font-medium text-neutral-900">
+          <a href="https://theskills.com/sign-in" className="font-medium text-neutral-900">
             {t("create_an_account")}
           </a>
         </div>
