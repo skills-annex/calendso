@@ -117,7 +117,7 @@ export default function ForgotPassword({ csrfToken }: { csrfToken: string }) {
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  <Link href="https://theskills.com/sign-in">
+                  <Link href={`${process.env.THETIS_SITE_HOST}/sign-in`}>
                     <button
                       type="button"
                       className="flex justify-center w-full px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
