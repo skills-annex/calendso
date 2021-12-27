@@ -1,5 +1,6 @@
 import debounce from "lodash/debounce";
 import { GetServerSidePropsContext } from "next";
+import Link from "next/link";
 import { getCsrfToken } from "next-auth/react";
 import React, { SyntheticEvent } from "react";
 
@@ -114,15 +115,15 @@ export default function ForgotPassword({ csrfToken }: { csrfToken: string }) {
                     loading={loading}>
                     {t("request_password_reset")}
                   </Button>
-
-                  <Button
-                    href="/auth/login"
-                    color="minimal"
-                    role="button"
-                    aria-label={t("login_instead")}
-                    className="justify-center w-full">
-                    {t("login_instead")}
-                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <Link href="https://theskills.com/sign-in">
+                    <button
+                      type="button"
+                      className="flex justify-center w-full px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                      {t("login")}
+                    </button>
+                  </Link>
                 </div>
               </form>
             </>
