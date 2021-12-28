@@ -78,6 +78,8 @@ function useRedirectToOnboardingIfNeeded() {
   useEffect(() => {
     if (user && shouldShowOnboarding(user)) {
       setRedirecting(true);
+    } else {
+      setRedirecting(false);
     }
   }, [router, user]);
   useEffect(() => {
