@@ -42,6 +42,7 @@ import { defaultAvatarSrc } from "@lib/profile";
 import { AdvancedOptions, EventTypeInput } from "@lib/types/event-type";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
 import { WorkingHours } from "@lib/types/schedule";
+import { OptionTypeBase } from "@lib/types/utils";
 
 import { Dialog, DialogContent, DialogTrigger } from "@components/Dialog";
 import Shell from "@components/Shell";
@@ -135,12 +136,14 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
   const [editIcon, setEditIcon] = useState(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState<OptionTypeBase | undefined>(undefined);
+  const [selectedLocation, setSelectedLocation] = useState<LocationOptionTypeBase | undefined>(undefined);
   const [selectedCustomInput, setSelectedCustomInput] = useState<EventTypeCustomInput | undefined>(undefined);
   const [selectedCustomInputModalOpen, setSelectedCustomInputModalOpen] = useState(false);
   const [customInputs, setCustomInputs] = useState<EventTypeCustomInput[]>(
     eventType.customInputs.sort((a, b) => a.id - b.id) || []
   );
+  const { email: userEmail } = props.session.user || {};
+  const isAdminUser = userEmail && process.env.THETIS_ADMIN_USER_EMAILS?.split(";").includes(userEmail);
 
   const periodType =
     PERIOD_TYPES.find((s) => s.type === eventType.periodType) ||
@@ -565,9 +568,10 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                           {team ? "team/" + team.slug : eventType.users[0].username}/
                         </span>
                         <input
+                          readOnly
                           type="text"
                           required
-                          className="flex-1 block w-full min-w-0 border-gray-300 rounded-none rounded-r-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                          className="flex-1 block w-full min-w-0 border-gray-300 rounded-none rounded-r-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm text-gray-500"
                           defaultValue={eventType.slug}
                           {...formMethods.register("slug")}
                         />
@@ -653,10 +657,10 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                             value={asStringOrUndefined(eventType.schedulingType)}
                             options={schedulingTypeOptions}
                             onChange={(val) => {
-                              // FIXME
-                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                              // @ts-ignore
-                              formMethods.setValue("schedulingType", val);
+                              formMethods.setValue(
+                                "schedulingType",
+                                val.currentTarget.value as SchedulingType
+                              );
                             }}
                           />
                         )}
@@ -1148,19 +1152,21 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                 <LinkIcon className="w-4 h-4 mr-2 text-neutral-500" />
                 {t("copy_link")}
               </button>
-              <Dialog>
-                <DialogTrigger className="flex items-center px-2 py-1 text-sm font-medium rounded-sm text-md text-neutral-700 hover:text-gray-900 hover:bg-gray-200">
-                  <TrashIcon className="w-4 h-4 mr-2 text-neutral-500" />
-                  {t("delete")}
-                </DialogTrigger>
-                <ConfirmationDialogContent
-                  variety="danger"
-                  title={t("delete_event_type")}
-                  confirmBtnText={t("confirm_delete_event_type")}
-                  onConfirm={deleteEventTypeHandler}>
-                  {t("delete_event_type_description")}
-                </ConfirmationDialogContent>
-              </Dialog>
+              {isAdminUser && (
+                <Dialog>
+                  <DialogTrigger className="flex items-center px-2 py-1 text-sm font-medium rounded-sm text-md text-neutral-700 hover:text-gray-900 hover:bg-gray-200">
+                    <TrashIcon className="w-4 h-4 mr-2 text-neutral-500" />
+                    {t("delete")}
+                  </DialogTrigger>
+                  <ConfirmationDialogContent
+                    variety="danger"
+                    title={t("delete_event_type")}
+                    confirmBtnText={t("confirm_delete_event_type")}
+                    onConfirm={deleteEventTypeHandler}>
+                    {t("delete_event_type_description")}
+                  </ConfirmationDialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
@@ -1442,7 +1448,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   const integrations = getIntegrations(credentials);
 
-  const locationOptions: OptionTypeBase[] = [];
+  const locationOptions: LocationOptionTypeBase[] = [];
 
   if (hasIntegration(integrations, "zoom_video")) {
     locationOptions.push({ value: LocationType.Zoom, label: "Zoom Video", disabled: true });
