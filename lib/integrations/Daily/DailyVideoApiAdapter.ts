@@ -118,7 +118,7 @@ const DailyVideoApiAdapter = (credential: Credential): VideoApiAdapter => {
           enable_chat: true,
           exp: exp,
           nbf: nbf,
-          enable_recording: "local",
+          enable_recording: "cloud-beta",
         },
       };
     }
