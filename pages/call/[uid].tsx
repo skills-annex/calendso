@@ -93,11 +93,23 @@ export default function JoinCall(props, session) {
           height: "100%",
         },
       });
-      callFrame.join({
-        url: props.booking.dailyRef.dailyurl,
-        showLeaveButton: true,
-        token: props.booking.dailyRef.dailytoken,
-      });
+      callFrame
+        .join({
+          url: props.booking.dailyRef.dailyurl,
+          showLeaveButton: true,
+          token: props.booking.dailyRef.dailytoken,
+        })
+        .then(() => {
+          callFrame.startRecording({
+            width: 1280,
+            height: 720,
+            backgroundColor: "#FF1F2D3D",
+            layout: {
+              preset: "default",
+              max_cam_streams: 5,
+            },
+          });
+        });
     }
   }, []);
 
