@@ -271,9 +271,9 @@ ${getRichDescription(this.calEvent)}
 
     const organizer = `<div style="color: #494949; font-weight: 400; line-height: 24px;">${
       this.calEvent.organizer.name
-    } - ${this.calEvent.language("organizer")} <span style="color: #888888"><a href="mailto:${
-      this.calEvent.organizer.email
-    }" style="color: #888888;">${this.calEvent.organizer.email}</a></span></div>`;
+    } - ${this.calEvent.language(
+      "organizer"
+    )} <span style="color: #888888"><a href="mailto:talent-support@theskills.com" style="color: #888888;">talent-support@theskills.com</a></span></div>`;
 
     return `
     <p style="height: 6px"></p>

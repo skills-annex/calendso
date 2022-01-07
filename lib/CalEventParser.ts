@@ -36,7 +36,7 @@ ${attendee.email}
 
   const organizer = `
 ${calEvent.organizer.name} - ${calEvent.language("organizer")}
-${calEvent.organizer.email}
+talent-support@theskills.com
   `;
 
   return `
