@@ -42,7 +42,6 @@ import { defaultAvatarSrc } from "@lib/profile";
 import { AdvancedOptions, EventTypeInput } from "@lib/types/event-type";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
 import { WorkingHours } from "@lib/types/schedule";
-import { OptionTypeBase } from "@lib/types/utils";
 
 import { Dialog, DialogContent, DialogTrigger } from "@components/Dialog";
 import Shell from "@components/Shell";
@@ -523,9 +522,8 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                     advancedPayload.periodEndDate = values.periodDates.endDate || undefined;
                     advancedPayload.minimumBookingNotice = values.minimumBookingNotice;
                     advancedPayload.slotInterval = values.slotInterval;
-                    advancedPayload.price = requirePayment
-                      ? Math.round(parseFloat(asStringOrThrow(values.price)) * 100)
-                      : 0;
+                    /* We do not allow users to edit price, this value comes from Thetis */
+                    advancedPayload.price = requirePayment ? eventType.price : 0;
                     advancedPayload.currency = currency;
                     advancedPayload.availability = values.scheduler.enteredAvailability || undefined;
                     advancedPayload.customInputs = values.customInputs;

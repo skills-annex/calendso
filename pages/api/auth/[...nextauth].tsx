@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { authenticator } from "otplib";
 
 import { ErrorCode, verifyPassword } from "@lib/auth";
@@ -16,18 +17,17 @@ export default NextAuth({
     // Use JSON Web Tokens for session instead of database sessions.
     // This option can be used with or without a database for users/accounts.
     // Note: `jwt` is automatically set to `true` if no database is specified.
-    jwt: true,
-
+    strategy: "jwt",
     // Seconds - How long until an idle session expires and is no longer valid.
     maxAge: 30 * 24 * 60 * 60, // 30 days
 
     // Seconds - Throttle how frequently to write to database to extend a session.
     // Use it to limit write operations. Set to 0 to always update the database.
     // Note: This option is ignored if using JSON Web Tokens
-    updateAge: 24 * 60 * 60, // 24 hours
+    updateAge: 24 * 60 * 60, // 24 hours,
   },
+  secret: process.env.JWT_SECRET,
   jwt: {
-    secret: process.env.JWT_SECRET,
     async encode(params?: JWTEncodeParams) {
       const { secret, token } = params || {};
       return jwt.sign(token || {}, secret || process.env.JWT_SECRET || "") as string;
@@ -174,14 +174,14 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async redirect(url, baseUrl) {
+    async redirect({ url, baseUrl }) {
       if (process.env.THETIS_SITE_HOST && url.startsWith(process.env.THETIS_SITE_HOST)) {
         return url;
       } else {
         return baseUrl;
       }
     },
-    async jwt(token, user) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.username = user.username;

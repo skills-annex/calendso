@@ -4,11 +4,12 @@ import Stripe from "stripe";
 
 import stripe from "@ee/lib/stripe/server";
 
-import { CalendarEvent, AdditionInformation } from "@lib/calendarClient";
 import { IS_PRODUCTION } from "@lib/config/constants";
+import { HttpError as HttpCode } from "@lib/core/http/error";
 import { sendScheduledEmails } from "@lib/emails/email-manager";
 import { getErrorFromUnknown } from "@lib/errors";
 import EventManager from "@lib/events/EventManager";
+import { CalendarEvent, AdditionInformation } from "@lib/integrations/calendar/interfaces/Calendar";
 import logger from "@lib/logger";
 import prisma from "@lib/prisma";
 import { Ensure } from "@lib/types/utils";
