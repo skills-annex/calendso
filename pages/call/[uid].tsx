@@ -100,15 +100,17 @@ export default function JoinCall(props, session) {
           token: props.booking.dailyRef.dailytoken,
         })
         .then(() => {
-          callFrame.startRecording({
-            width: 1280,
-            height: 720,
-            backgroundColor: "#FF1F2D3D",
-            layout: {
-              preset: "default",
-              max_cam_streams: 5,
-            },
-          });
+          if (props.record) {
+            callFrame.startRecording({
+              width: 1280,
+              height: 720,
+              backgroundColor: "#FF1F2D3D",
+              layout: {
+                preset: "default",
+                max_cam_streams: 5,
+              },
+            });
+          }
         });
     }
   }, []);
@@ -141,6 +143,7 @@ export default function JoinCall(props, session) {
 }
 
 export async function getServerSideProps(context) {
+  const record = context.query.record || false;
   const booking = await prisma.booking.findUnique({
     where: {
       uid: context.query.uid,
@@ -188,6 +191,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      record,
       booking: bookingObj,
       session: session,
     },
