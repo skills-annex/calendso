@@ -304,7 +304,7 @@ ${getRichDescription(this.calEvent)}
     if (this.calEvent.videoCallData) {
       const meetingId = this.calEvent.videoCallData.id;
       const meetingPassword = this.calEvent.videoCallData.password;
-      const meetingUrl = this.calEvent.videoCallData.url;
+      const meetingUrl = this.calEvent.videoCallData.url && `${this.calEvent.videoCallData.url}?record=1`;
 
       return `
       <p style="height: 6px"></p>

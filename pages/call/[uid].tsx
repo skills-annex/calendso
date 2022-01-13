@@ -70,10 +70,24 @@ export default function JoinCall(props: JoinCallPageProps) {
           height: "100%",
         },
       });
-      callFrame.join({
-        url: props.booking.dailyRef?.dailyurl,
-        showLeaveButton: true,
-      });
+      callFrame
+        .join({
+          url: props.booking.dailyRef?.dailyurl,
+          showLeaveButton: true,
+        })
+        .then(() => {
+          if (props.record) {
+            callFrame.startRecording({
+              width: 1280,
+              height: 720,
+              backgroundColor: "#FF1F2D3D",
+              layout: {
+                preset: "default",
+                max_cam_streams: 5,
+              },
+            });
+          }
+        });
     }
     if (!meetingUnavailable && !emptyBooking && session?.userid === props.booking.user?.id) {
       const callFrame = DailyIframe.createFrame({
@@ -105,15 +119,17 @@ export default function JoinCall(props: JoinCallPageProps) {
           token: props.booking.dailyRef?.dailytoken,
         })
         .then(() => {
-          callFrame.startRecording({
-            width: 1280,
-            height: 720,
-            backgroundColor: "#FF1F2D3D",
-            layout: {
-              preset: "default",
-              max_cam_streams: 5,
-            },
-          });
+          if (props.record) {
+            callFrame.startRecording({
+              width: 1280,
+              height: 720,
+              backgroundColor: "#FF1F2D3D",
+              layout: {
+                preset: "default",
+                max_cam_streams: 5,
+              },
+            });
+          }
         });
     }
   }, []);
@@ -146,6 +162,7 @@ export default function JoinCall(props: JoinCallPageProps) {
 }
 
 export async function getServerSideProps(context: NextPageContext) {
+  const record = context.query.record || false;
   const booking = await prisma.booking.findUnique({
     where: {
       uid: context.query.uid as string,
@@ -194,6 +211,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   return {
     props: {
+      record,
       booking: bookingObj,
       session: session,
     },
