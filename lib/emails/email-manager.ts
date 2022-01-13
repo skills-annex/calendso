@@ -3,6 +3,7 @@ import AttendeeCancelledEmail from "@lib/emails/templates/attendee-cancelled-ema
 import AttendeeDeclinedEmail from "@lib/emails/templates/attendee-declined-email";
 import AttendeeRescheduledEmail from "@lib/emails/templates/attendee-rescheduled-email";
 import AttendeeScheduledEmail from "@lib/emails/templates/attendee-scheduled-email";
+import EventReminderEmail from "@lib/emails/templates/event-reminder-email";
 import ForgotPasswordEmail, { PasswordReset } from "@lib/emails/templates/forgot-password-email";
 import OrganizerCancelledEmail from "@lib/emails/templates/organizer-cancelled-email";
 import OrganizerPaymentRefundFailedEmail from "@lib/emails/templates/organizer-payment-refund-failed-email";
@@ -11,7 +12,7 @@ import OrganizerRequestReminderEmail from "@lib/emails/templates/organizer-reque
 import OrganizerRescheduledEmail from "@lib/emails/templates/organizer-rescheduled-email";
 import OrganizerScheduledEmail from "@lib/emails/templates/organizer-scheduled-email";
 import TeamInviteEmail, { TeamInvite } from "@lib/emails/templates/team-invite-email";
-import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
+import { CalendarEvent, Person } from "@lib/integrations/calendar/interfaces/Calendar";
 
 export const sendScheduledEmails = async (calEvent: CalendarEvent) => {
   const emailsToSend = [];
@@ -142,6 +143,29 @@ export const sendOrganizerRequestReminderEmail = async (calEvent: CalendarEvent)
       reject(console.error("OrganizerRequestReminderEmail.sendEmail failed", e));
     }
   });
+};
+
+export const sendEventReminderEmail = async (
+  calEvent: CalendarEvent,
+  eventAttendees: Person[],
+  shouldShowVideoLink: boolean
+) => {
+  const emailsToSend = [];
+
+  emailsToSend.push(
+    eventAttendees.map((attendee) => {
+      return new Promise((resolve, reject) => {
+        try {
+          const eventReminderEmail = new EventReminderEmail(calEvent, attendee, shouldShowVideoLink);
+          resolve(eventReminderEmail.sendEmail());
+        } catch (e) {
+          reject(console.error("EventReminderEmail.sendEmail failed", e));
+        }
+      });
+    })
+  );
+
+  await Promise.all(emailsToSend);
 };
 
 export const sendAwaitingPaymentEmail = async (calEvent: CalendarEvent) => {

@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { createEvent, DateArray, Person } from "ics";
 import nodemailer from "nodemailer";
 
-import { getCancelLink, getRichDescription } from "@lib/CalEventParser";
+import { getCancelLink, getRescheduleLink, getRichDescription } from "@lib/CalEventParser";
 import { getErrorFromUnknown } from "@lib/errors";
 import { getIntegrationName } from "@lib/integrations";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
@@ -29,10 +29,12 @@ dayjs.extend(toArray);
 export default class AttendeeScheduledEmail {
   calEvent: CalendarEvent;
   attendee: Person;
+  shouldShowVideoLink?: boolean;
 
-  constructor(calEvent: CalendarEvent, attendee: Person) {
+  constructor(calEvent: CalendarEvent, attendee: Person, shouldShowVideoLink = false) {
     this.calEvent = calEvent;
     this.attendee = attendee;
+    this.shouldShowVideoLink = shouldShowVideoLink;
   }
 
   public sendEmail() {
@@ -167,7 +169,7 @@ ${getRichDescription(this.calEvent)}
                               ${this.getWhen()}
                               ${this.getWho()}
                               ${this.getLocation()}
-                              ${this.getAdditionalNotes()}
+                              ${this.calEvent.description ? this.getAdditionalNotes() : ""}
                             </div>
                           </td>
                         </tr>
@@ -230,6 +232,16 @@ ${getRichDescription(this.calEvent)}
     return "";
   }
 
+  protected getRescheduleLink(): string {
+    const manageText = this.calEvent.language("manage_this_event");
+
+    return `<p>${this.calEvent.language(
+      "need_to_reschedule_or_cancel"
+    )}</p><p style="font-weight: 400; line-height: 24px;"><a href="${getRescheduleLink(
+      this.calEvent
+    )}" style="color: #3E3E3E;" alt="${manageText}">${manageText}</a></p>`;
+  }
+
   protected getWhat(): string {
     return `
     <div style="line-height: 6px;">
@@ -287,7 +299,9 @@ ${getRichDescription(this.calEvent)}
     <p style="height: 6px"></p>
     <div style="line-height: 6px;">
       <p style="color: #494949;">${this.calEvent.language("additional_notes")}</p>
-      <p style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.description}</p>
+      <p style="color: #494949; font-weight: 400; line-height: 24px;">${
+        this.calEvent.description ? this.calEvent.description : ""
+      }</p>
     </div>
     `;
   }
@@ -300,10 +314,8 @@ ${getRichDescription(this.calEvent)}
       providerName = location[0].toUpperCase() + location.slice(1);
     }
 
-    if (this.calEvent.videoCallData) {
-      const meetingId = this.calEvent.videoCallData.id;
-      const meetingPassword = this.calEvent.videoCallData.password;
-      const meetingUrl = this.calEvent.videoCallData.url;
+    if (this.calEvent.dailyRef) {
+      const meetingUrl = this.calEvent.dailyRef.dailyurl;
 
       return `
       <p style="height: 6px"></p>
@@ -315,18 +327,6 @@ ${getRichDescription(this.calEvent)}
           "meeting_url"
         )}"><img src="${linkIcon()}" width="12px"></img></a>`
       }</p>
-        ${
-          meetingId &&
-          `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
-            "meeting_id"
-          )}: <span>${meetingId}</span></div>`
-        }
-        ${
-          meetingPassword &&
-          `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
-            "meeting_password"
-          )}: <span>${meetingPassword}</span></div>`
-        }
         ${
           meetingUrl &&
           `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
