@@ -135,12 +135,6 @@ export default function Shell(props: {
 
   const navigation = [
     {
-      name: t("event_types_page_title"),
-      href: "/event-types",
-      icon: LinkIcon,
-      current: router.asPath.startsWith("/event-types"),
-    },
-    {
       name: t("bookings"),
       href: "/bookings/upcoming",
       icon: CalendarIcon,
@@ -151,6 +145,12 @@ export default function Shell(props: {
       href: "/availability",
       icon: ClockIcon,
       current: router.asPath.startsWith("/availability"),
+    },
+    {
+      name: t("event_types_page_title"),
+      href: "/event-types",
+      icon: LinkIcon,
+      current: router.asPath.startsWith("/event-types"),
     },
     {
       name: t("integrations"),
@@ -355,8 +355,6 @@ function UserDropdown({ small }: { small?: boolean }) {
   const { t } = useLocale();
   const query = useMeQuery();
   const user = query.data;
-  const mutation = trpc.useMutation("viewer.away");
-  const utils = trpc.useContext();
 
   return (
     <Dropdown>

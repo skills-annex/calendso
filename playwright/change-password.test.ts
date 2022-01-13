@@ -6,8 +6,8 @@ test.use({ storageState: "playwright/artifacts/proStorageState.json" });
 test("change password", async ({ page }) => {
   // Try to go homepage
   await page.goto("/");
-  // It should redirect you to the event-types page
-  await page.waitForSelector("[data-testid=event-types]");
+  // It should redirect you to the bookings page
+  await page.waitForSelector("[data-testid=bookings]");
 
   // Go to http://localhost:3000/settings/security
   await page.goto("/settings/security");

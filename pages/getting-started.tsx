@@ -211,7 +211,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
     });
 
     setSubmitting(false);
-    router.push("/event-types");
+    router.push("/bookings/upcoming");
   };
 
   const availabilityForm = useForm({ defaultValues: { schedule: DEFAULT_SCHEDULE } });
@@ -540,7 +540,7 @@ export async function getServerSideProps(context: NextPageContext) {
     return {
       redirect: {
         permanent: false,
-        destination: "/event-types",
+        destination: "/bookings/upcoming",
       },
     };
   }
