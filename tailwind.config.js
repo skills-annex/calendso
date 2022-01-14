@@ -99,6 +99,7 @@ module.exports = {
           800: "#065F46",
           900: "#064E3B",
         },
+        teal: "#118f97",
       },
       fontFamily: {
         cal: ["Cal Sans", "sans-serif"],
