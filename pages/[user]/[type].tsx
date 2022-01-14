@@ -175,6 +175,20 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     periodEndDate: eventType.periodEndDate?.toString() ?? null,
   });
 
+  const currentBookings = await prisma.booking.findMany({
+    where: {
+      user: {
+        id: user.id,
+      },
+      eventTypeId: {
+        equals: eventTypeObject.id,
+      },
+    },
+    select: {
+      startTime: true,
+    },
+  });
+  const currentBookingTimes = currentBookings.map((booking) => booking.startTime.toString());
   const workingHours = getWorkingHours(
     {
       timeZone: eventType.timeZone || user.timeZone,
@@ -194,6 +208,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
         weekStart: user.weekStart,
         brandColor: user.brandColor,
       },
+      currentBookings: currentBookingTimes,
       date: dateParam,
       eventType: eventTypeObject,
       workingHours,

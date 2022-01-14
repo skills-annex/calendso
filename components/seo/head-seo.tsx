@@ -6,6 +6,7 @@ import { getSeoImage, seoConfig } from "@lib/config/next-seo.config";
 import { getBrowserInfo } from "@lib/core/browser/browser.utils";
 
 export type HeadSeoProps = {
+  avatar?: string;
   title: string;
   description: string;
   siteName?: string;

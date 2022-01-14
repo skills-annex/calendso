@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import getSlots from "@lib/slots";
 import { TimeRange, WorkingHours } from "@lib/types/schedule";
 
+import { AvailableTimesProps } from "@components/booking/AvailableTimes";
+
 dayjs.extend(isBetween);
 dayjs.extend(utc);
 
@@ -22,18 +24,16 @@ type Slot = {
   users?: string[];
 };
 
-type UseSlotsProps = {
-  slotInterval: number | null;
-  eventLength: number;
-  eventTypeId: number;
-  minimumBookingNotice?: number;
-  date: Dayjs;
-  users: { username: string | null }[];
-  schedulingType: SchedulingType | null;
-};
-
-export const useSlots = (props: UseSlotsProps) => {
-  const { slotInterval, eventLength, minimumBookingNotice = 0, date, users, eventTypeId } = props;
+export const useSlots = (props: AvailableTimesProps) => {
+  const {
+    slotInterval,
+    eventLength,
+    minimumBookingNotice = 0,
+    date,
+    users,
+    eventTypeId,
+    currentBookings,
+  } = props;
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -54,7 +54,10 @@ export const useSlots = (props: UseSlotsProps) => {
         let loadedSlots: Slot[] = results[0] || [];
         if (results.length === 1) {
           loadedSlots = loadedSlots?.sort((a, b) => (a.time.isAfter(b.time) ? 1 : -1));
-          setSlots(loadedSlots);
+          const finalSlots = loadedSlots.filter(
+            ({ time }) => !currentBookings?.includes(time.toDate().toString())
+          );
+          setSlots(finalSlots);
           setLoading(false);
           return;
         }
