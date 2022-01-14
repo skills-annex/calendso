@@ -2,8 +2,8 @@ import { ReminderType } from "@prisma/client";
 import dayjs from "dayjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { CalendarEvent } from "@lib/calendarClient";
 import { sendEventReminderEmail } from "@lib/emails/email-manager";
+import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
 import prisma from "@lib/prisma";
 
 import { getTranslation } from "@server/lib/i18n";
@@ -93,9 +93,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
 
         const eventAttendees = [{ name, email: user.email, timeZone: user.timeZone }, ...attendees];
-        const shouldShowVideoLink = interval === 30;
 
-        await sendEventReminderEmail(evt, eventAttendees, shouldShowVideoLink);
+        await sendEventReminderEmail(evt, eventAttendees);
 
         await prisma.reminderMail.create({
           data: {

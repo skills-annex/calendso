@@ -1,4 +1,4 @@
-name: Cron - bookingReminder
+name: Cron - eventReminder
 
 on:
   # "Scheduled workflows run on the latest commit on the default or base branch."

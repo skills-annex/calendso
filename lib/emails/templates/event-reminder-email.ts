@@ -18,8 +18,8 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
   protected getNodeMailerPayload(): Record<string, unknown> {
     return {
       to: `${this.attendee.name} <${this.attendee.email}>`,
-      from: `talent-support@theskills.com <${this.getMailerOptions().from}>`,
-      replyTo: "talent-support@theskills.com",
+      from: `info@theskills.com <${this.getMailerOptions().from}>`,
+      replyTo: "questions@theskills.com",
       subject: `Event Reminder: ${this.calEvent.type} ${this.getInviteeStart().format(
         "h:mma"
       )} - ${this.getInviteeEnd().format("h:mma")}`,

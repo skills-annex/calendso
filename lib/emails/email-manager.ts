@@ -145,18 +145,14 @@ export const sendOrganizerRequestReminderEmail = async (calEvent: CalendarEvent)
   });
 };
 
-export const sendEventReminderEmail = async (
-  calEvent: CalendarEvent,
-  eventAttendees: Person[],
-  shouldShowVideoLink: boolean
-) => {
+export const sendEventReminderEmail = async (calEvent: CalendarEvent, eventAttendees: Person[]) => {
   const emailsToSend = [];
 
   emailsToSend.push(
     eventAttendees.map((attendee) => {
       return new Promise((resolve, reject) => {
         try {
-          const eventReminderEmail = new EventReminderEmail(calEvent, attendee, shouldShowVideoLink);
+          const eventReminderEmail = new EventReminderEmail(calEvent, attendee);
           resolve(eventReminderEmail.sendEmail());
         } catch (e) {
           reject(console.error("EventReminderEmail.sendEmail failed", e));

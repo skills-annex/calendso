@@ -29,12 +29,10 @@ dayjs.extend(toArray);
 export default class AttendeeScheduledEmail {
   calEvent: CalendarEvent;
   attendee: Person;
-  shouldShowVideoLink?: boolean;
 
-  constructor(calEvent: CalendarEvent, attendee: Person, shouldShowVideoLink = false) {
+  constructor(calEvent: CalendarEvent, attendee: Person) {
     this.calEvent = calEvent;
     this.attendee = attendee;
-    this.shouldShowVideoLink = shouldShowVideoLink;
   }
 
   public sendEmail() {
@@ -315,7 +313,10 @@ ${getRichDescription(this.calEvent)}
     }
 
     if (this.calEvent.dailyRef) {
-      const meetingUrl = this.calEvent.dailyRef.dailyurl;
+      const isAttendeeInstructor = this.attendee.email === this.calEvent.organizer.email;
+      const meetingUrl = isAttendeeInstructor
+        ? `${this.calEvent.dailyRef.dailyurl}?record=1`
+        : this.calEvent.dailyRef.dailyurl;
 
       return `
       <p style="height: 6px"></p>
