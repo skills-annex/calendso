@@ -22,14 +22,13 @@ import { HeadSeo } from "@components/seo/head-seo";
 import AvatarGroup from "@components/ui/AvatarGroup";
 
 import { AvailabilityPageProps } from "../../../pages/[user]/[type]";
-import { AvailabilityTeamPageProps } from "../../../pages/team/[slug]/[type]";
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
-type Props = AvailabilityTeamPageProps | AvailabilityPageProps;
+type Props = AvailabilityPageProps;
 
-const AvailabilityPage = ({ profile, eventType, workingHours }: Props) => {
+const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }: Props) => {
   const router = useRouter();
   const { rescheduleUid } = router.query;
   const { isReady } = useTheme(profile.theme);
@@ -223,6 +222,7 @@ const AvailabilityPage = ({ profile, eventType, workingHours }: Props) => {
                     date={selectedDate}
                     users={eventType.users}
                     schedulingType={eventType.schedulingType ?? null}
+                    currentBookings={currentBookings}
                   />
                 )}
               </div>

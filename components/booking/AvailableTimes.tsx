@@ -11,7 +11,7 @@ import { useSlots } from "@lib/hooks/useSlots";
 
 import Loader from "@components/Loader";
 
-type AvailableTimesProps = {
+export type AvailableTimesProps = {
   timeFormat: string;
   minimumBookingNotice: number;
   eventTypeId: number;
@@ -22,6 +22,7 @@ type AvailableTimesProps = {
     username: string | null;
   }[];
   schedulingType: SchedulingType | null;
+  currentBookings?: string[];
 };
 
 const AvailableTimes: FC<AvailableTimesProps> = ({
@@ -33,6 +34,7 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
   timeFormat,
   users,
   schedulingType,
+  currentBookings,
 }) => {
   const { t, i18n } = useLocale();
   const router = useRouter();
@@ -46,6 +48,8 @@ const AvailableTimes: FC<AvailableTimesProps> = ({
     users,
     minimumBookingNotice,
     eventTypeId,
+    currentBookings,
+    timeFormat,
   });
 
   const [brand, setBrand] = useState("#292929");
