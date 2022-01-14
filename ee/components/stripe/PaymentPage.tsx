@@ -106,6 +106,10 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                           />
                         </IntlProvider>
                       </div>
+                      <div className="font-medium">{t("Terms")}</div>
+                      <div className="col-span-2 mb-6">
+                        {t("Cancel 24 hours before lesson for full refund")}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -132,6 +136,17 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                     <a href="https://theskills.com">{t("create_booking_link_with_calcom")}</a>
                   </div>
                 )}
+                <p className="text-xs text-neutral-600 dark:text-gray-300 mt-8">
+                  By purchasing, you agree to The Skills{" "}
+                  <a
+                    className="text-teal"
+                    href={`${process.env.THETIS_SITE_HOST}/pages/terms`}
+                    target="_blank"
+                    rel="noreferrer">
+                    Terms and Conditions
+                  </a>
+                  . All prices are in USD
+                </p>
               </div>
             </div>
           </div>
