@@ -7,6 +7,7 @@ import { checkPremiumUsername } from "@ee/lib/core/checkPremiumUsername";
 import { checkRegularUsername } from "@lib/core/checkRegularUsername";
 import { getCalendarCredentials, getConnectedCalendars } from "@lib/integrations/calendar/CalendarManager";
 import { ALL_INTEGRATIONS } from "@lib/integrations/getIntegrations";
+import isAdminUser from "@lib/isAdminUser";
 import slugify from "@lib/slugify";
 import { Schedule } from "@lib/types/schedule";
 
@@ -255,9 +256,8 @@ const loggedInViewerRouter = createProtectedRouter()
           eventTypes: membership.team.eventTypes,
         }))
       );
-      
-      const isAdminUser = process.env.THETIS_ADMIN_USER_EMAILS?.split(";").includes(user.email);
-      const canAddEvents = isAdminUser // user.plan !== "FREE" || eventTypeGroups[0].eventTypes.length < 1;
+
+      const canAddEvents = isAdminUser(user.email); // user.plan !== "FREE" || eventTypeGroups[0].eventTypes.length < 1;
 
       return {
         viewer: {
