@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import dayjs from "dayjs";
 import { GetServerSidePropsContext } from "next";
 
 import { asStringOrNull } from "@lib/asStringOrNull";
@@ -182,6 +183,9 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       },
       eventTypeId: {
         equals: eventTypeObject.id,
+      },
+      startTime: {
+        gte: dayjs().toDate(),
       },
     },
     select: {
