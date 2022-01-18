@@ -525,5 +525,7 @@
   "calendar": "Calendar",
   "not_installed": "Nu este instalat",
   "error_password_mismatch": "Parolele nu se potrivesc.",
-  "error_required_field": "Acest câmp este obligatoriu."
+  "error_required_field": "Acest câmp este obligatoriu.",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }

@@ -570,5 +570,7 @@
   "error_required_field": "Este campo é obrigatório.",
   "status": "Status",
   "team_view_user_availability": "Ver disponibilidade do usuário",
-  "team_view_user_availability_disabled": "O usuário precisa aceitar o convite para ver a disponibilidade"
+  "team_view_user_availability_disabled": "O usuário precisa aceitar o convite para ver a disponibilidade",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }

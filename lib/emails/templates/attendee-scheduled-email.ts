@@ -168,6 +168,7 @@ ${getRichDescription(this.calEvent)}
                               ${this.getWho()}
                               ${this.getLocation()}
                               ${this.calEvent.description ? this.getAdditionalNotes() : ""}
+                              ${this.getRecordingNotice()}
                             </div>
                           </td>
                         </tr>
@@ -300,6 +301,18 @@ ${getRichDescription(this.calEvent)}
       <p style="color: #494949; font-weight: 400; line-height: 24px;">${
         this.calEvent.description ? this.calEvent.description : ""
       }</p>
+    </div>
+    `;
+  }
+
+  protected getRecordingNotice(): string {
+    return `
+    <p style="height: 6px"></p>
+    <div style="line-height: 6px;">
+      <p style="color: #494949;">${this.calEvent.language("recording_notice_title")}</p>
+      <p style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+        "recording_notice"
+      )}</p>
     </div>
     `;
   }
