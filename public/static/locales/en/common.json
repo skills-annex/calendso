@@ -1,6 +1,6 @@
 {
   "trial_days_left": "You have $t(day, {\"count\": {{days}} }) left on your PRO trial",
-  "day": "{{count}} day", 
+  "day": "{{count}} day",
   "day_plural": "{{count}} days",
   "upgrade_now": "Upgrade now",
   "accept_invitation": "Accept Invitation",
@@ -576,5 +576,7 @@
   "set_as_away": "Set yourself as away",
   "set_as_free": "Disable away status",
   "user_away": "This user is currently away.",
-  "user_away_description": "The person you are trying to book has set themselves to away, and therefore is not accepting new bookings."
+  "user_away_description": "The person you are trying to book has set themselves to away, and therefore is not accepting new bookings.",
+  "recording_notice_title": "Recording notice",
+  "recording_notice": "For quality assurance, your video call will be recorded. If you have any questions, please reach out to <a href='mailto: questions@theskills.com'>questions@theskills.com</a>"
 }

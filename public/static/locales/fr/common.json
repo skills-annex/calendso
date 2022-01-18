@@ -529,5 +529,7 @@
   "not_installed": "Non installé",
   "error_password_mismatch": "Les mots de passe ne correspondent pas.",
   "error_required_field": "Ce champ est requis.",
-  "status": "Statut"
+  "status": "Statut",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }
