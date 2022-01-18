@@ -9,15 +9,15 @@ on:
 jobs:
   cron:
     env:
-      NEXT_PUBLIC_APP_URL: ${{ process.env.NEXT_PUBLIC_APP_URL }}
-      CRON_API_KEY: ${{ process.env.CRON_API_KEY }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      CRON_API_KEY: ${{ secrets.CRON_API_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: cURL request
         if: ${{ env.NEXT_PUBLIC_APP_URL && env.CRON_API_KEY }}
         run: |
-          curl ${{ process.env.NEXT_PUBLIC_APP_URL }}/api/cron/eventReminder \
+          curl ${{ secrets.NEXT_PUBLIC_APP_URL }}/api/cron/eventReminder \
             -X POST \
             -H 'content-type: application/json' \
-            -H 'authorization: ${{ process.env.CRON_API_KEY }}' \
+            -H 'authorization: ${{ secrets.CRON_API_KEY }}' \
             --fail
