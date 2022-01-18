@@ -53,6 +53,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
       slug: "30min",
       length: 30,
       locations: [{ type: "integrations:daily" }],
+      disableGuests: true,
     },
   ];
 

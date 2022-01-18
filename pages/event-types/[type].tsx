@@ -33,6 +33,7 @@ import { getSession } from "@lib/auth";
 import { HttpError } from "@lib/core/http/error";
 import { useLocale } from "@lib/hooks/useLocale";
 import getIntegrations, { hasIntegration } from "@lib/integrations/getIntegrations";
+import isAdminUser from "@lib/isAdminUser";
 import { LocationType } from "@lib/location";
 import deleteEventType from "@lib/mutations/event-types/delete-event-type";
 import updateEventType from "@lib/mutations/event-types/update-event-type";
@@ -135,14 +136,14 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
   const [editIcon, setEditIcon] = useState(true);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState<LocationOptionTypeBase | undefined>(undefined);
+  const [selectedLocation, setSelectedLocation] = useState<OptionTypeBase | undefined>(undefined);
   const [selectedCustomInput, setSelectedCustomInput] = useState<EventTypeCustomInput | undefined>(undefined);
   const [selectedCustomInputModalOpen, setSelectedCustomInputModalOpen] = useState(false);
   const [customInputs, setCustomInputs] = useState<EventTypeCustomInput[]>(
     eventType.customInputs.sort((a, b) => a.id - b.id) || []
   );
   const { email: userEmail } = props.session.user || {};
-  const isAdminUser = userEmail && process.env.THETIS_ADMIN_USER_EMAILS?.split(";").includes(userEmail);
+  const isAdmin = userEmail && isAdminUser(userEmail);
 
   const periodType =
     PERIOD_TYPES.find((s) => s.type === eventType.periodType) ||
@@ -819,24 +820,25 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                           />
                         )}
                       />
-
-                      <Controller
-                        name="disableGuests"
-                        control={formMethods.control}
-                        defaultValue={eventType.disableGuests}
-                        render={() => (
-                          <CheckboxField
-                            id="disableGuests"
-                            name="disableGuests"
-                            label={t("disable_guests")}
-                            description={t("disable_guests_description")}
-                            defaultChecked={eventType.disableGuests}
-                            onChange={(e) => {
-                              formMethods.setValue("disableGuests", e?.target.checked);
-                            }}
-                          />
-                        )}
-                      />
+                      {isAdmin && (
+                        <Controller
+                          name="disableGuests"
+                          control={formMethods.control}
+                          defaultValue={eventType.disableGuests}
+                          render={() => (
+                            <CheckboxField
+                              id="disableGuests"
+                              name="disableGuests"
+                              label={t("disable_guests")}
+                              description={t("disable_guests_description")}
+                              defaultChecked={eventType.disableGuests}
+                              onChange={(e) => {
+                                formMethods.setValue("disableGuests", e?.target.checked);
+                              }}
+                            />
+                          )}
+                        />
+                      )}
 
                       <hr className="my-2 border-neutral-200" />
                       <Controller
@@ -1150,7 +1152,7 @@ const EventTypePage = (props: inferSSRProps<typeof getServerSideProps>) => {
                 <LinkIcon className="w-4 h-4 mr-2 text-neutral-500" />
                 {t("copy_link")}
               </button>
-              {isAdminUser && (
+              {isAdmin && (
                 <Dialog>
                   <DialogTrigger className="flex items-center px-2 py-1 text-sm font-medium rounded-sm text-md text-neutral-700 hover:text-gray-900 hover:bg-gray-200">
                     <TrashIcon className="w-4 h-4 mr-2 text-neutral-500" />
@@ -1446,7 +1448,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   const integrations = getIntegrations(credentials);
 
-  const locationOptions: LocationOptionTypeBase[] = [];
+  const locationOptions: OptionTypeBase[] = [];
 
   if (hasIntegration(integrations, "zoom_video")) {
     locationOptions.push({ value: LocationType.Zoom, label: "Zoom Video", disabled: true });
