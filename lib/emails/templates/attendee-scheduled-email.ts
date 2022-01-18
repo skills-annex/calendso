@@ -327,18 +327,18 @@ ${getRichDescription(this.calEvent)}
           "meeting_url"
         )}"><img src="${linkIcon()}" width="12px"></img></a>`
       }</p>
-      ${
-        meetingId &&
-        `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
-          "meeting_id"
-        )}: <span>${meetingId}</span></div>`
-      }
-      ${
-        meetingPassword &&
-        `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
-          "meeting_password"
-        )}: <span>${meetingPassword}</span></div>`
-      }
+        ${
+          meetingId &&
+          `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+            "meeting_id"
+          )}: <span>${meetingId}</span></div>`
+        }
+        ${
+          meetingPassword &&
+          `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+            "meeting_password"
+          )}: <span>${meetingPassword}</span></div>`
+        }
         ${
           meetingUrl &&
           `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
