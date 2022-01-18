@@ -1,4 +1,4 @@
-import { DailyEventReference, DestinationCalendar, SelectedCalendar } from "@prisma/client";
+import { DestinationCalendar, SelectedCalendar } from "@prisma/client";
 import { TFunction } from "next-i18next";
 
 import { PaymentInfo } from "@ee/lib/stripe/server";
@@ -38,7 +38,15 @@ export interface CalendarEvent {
   startTime: string;
   endTime: string;
   description?: string | null;
-  dailyRef?: DailyEventReference | null;
+  references?: {
+    id: number;
+    type: string;
+    uid: string;
+    meetingId: string | null;
+    meetingPassword: string | null;
+    meetingUrl: string | null;
+    bookingId: number | null;
+  }[];
   team?: {
     name: string;
     members: string[];

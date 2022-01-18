@@ -312,11 +312,10 @@ ${getRichDescription(this.calEvent)}
       providerName = location[0].toUpperCase() + location.slice(1);
     }
 
-    if (this.calEvent.dailyRef) {
+    if (this.calEvent.references && this.calEvent.references[0]) {
+      const { meetingId, meetingPassword, meetingUrl: baseMeetingUrl } = this.calEvent.references[0];
       const isAttendeeInstructor = this.attendee.email === this.calEvent.organizer.email;
-      const meetingUrl = isAttendeeInstructor
-        ? `${this.calEvent.dailyRef.dailyurl}?record=1`
-        : this.calEvent.dailyRef.dailyurl;
+      const meetingUrl = isAttendeeInstructor ? `${baseMeetingUrl}?record=1` : baseMeetingUrl;
 
       return `
       <p style="height: 6px"></p>
@@ -328,6 +327,18 @@ ${getRichDescription(this.calEvent)}
           "meeting_url"
         )}"><img src="${linkIcon()}" width="12px"></img></a>`
       }</p>
+      ${
+        meetingId &&
+        `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+          "meeting_id"
+        )}: <span>${meetingId}</span></div>`
+      }
+      ${
+        meetingPassword &&
+        `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+          "meeting_password"
+        )}: <span>${meetingPassword}</span></div>`
+      }
         ${
           meetingUrl &&
           `<div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(

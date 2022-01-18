@@ -72,7 +72,7 @@ const DailyVideoApiAdapter = (credential: Credential): VideoApiAdapter => {
 
   async function createOrUpdateMeeting(endpoint: string, event: CalendarEvent): Promise<VideoCallData> {
     if (!event.uid) {
-      throw new Error("We need need the booking uid to create the Daily reference in DB");
+      throw new Error("We need the booking uid to create the Daily reference in DB");
     }
     const response = await postToDailyAPI(endpoint, translateEvent(event));
     const dailyEvent: DailyReturnType = await handleErrorsJson(response);

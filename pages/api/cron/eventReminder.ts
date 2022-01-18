@@ -39,7 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         startTime: true,
         endTime: true,
         attendees: true,
-        dailyRef: true,
+        references: {
+          select: {
+            bookingId: true,
+            id: true,
+            type: true,
+            uid: true,
+            meetingId: true,
+            meetingPassword: true,
+            meetingUrl: true,
+          },
+        },
         user: {
           select: {
             email: true,
@@ -81,7 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           location: booking.location ?? "",
           startTime: booking.startTime.toISOString(),
           endTime: booking.endTime.toISOString(),
-          dailyRef: booking.dailyRef,
+          references: booking.references,
           organizer: {
             email: user.email,
             name,
