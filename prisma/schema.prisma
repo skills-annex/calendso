@@ -281,6 +281,7 @@ model ResetPasswordRequest {
 
 enum ReminderType {
   PENDING_BOOKING_CONFIRMATION
+  ATTENDEE_REMINDER
 }
 
 model ReminderMail {

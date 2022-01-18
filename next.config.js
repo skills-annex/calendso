@@ -57,7 +57,8 @@ plugins.push(withTM);
 module.exports = () => plugins.reduce((acc, next) => next(acc), {
   i18n,
   env: {
-    THETIS_SITE_HOST: process.env.THETIS_SITE_HOST
+    THETIS_SITE_HOST: process.env.THETIS_SITE_HOST,
+    CRON_API_KEY: process.env.CRON_API_KEY
   },
   eslint: {
     // This allows production builds to successfully complete even if the project has ESLint errors.

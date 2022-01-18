@@ -10,6 +10,8 @@ it("can find lucky users", async () => {
       timeZone: "GMT",
       bufferTime: 0,
       email: "test@example.com",
+      thetisId: null,
+      destinationCalendar: null,
     },
     {
       id: 2,
@@ -19,6 +21,8 @@ it("can find lucky users", async () => {
       timeZone: "GMT",
       bufferTime: 0,
       email: "test2@example.com",
+      thetisId: null,
+      destinationCalendar: null,
     },
   ];
   expect(
