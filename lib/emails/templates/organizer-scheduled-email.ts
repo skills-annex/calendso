@@ -65,7 +65,7 @@ export default class OrganizerScheduledEmail {
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
-      organizer: { name: this.calEvent.organizer.name, email: this.calEvent.organizer.email },
+      organizer: { name: this.calEvent.organizer.name, email: "questions@theskills.com" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
         email: attendee.email,
@@ -263,9 +263,7 @@ ${getRichDescription(this.calEvent)}
       .map((attendee) => {
         return `<div style="color: #494949; font-weight: 400; line-height: 24px;">${
           attendee?.name || `${this.calEvent.language("guest")}`
-        } <span style="color: #888888"><a href="mailto:${attendee.email}" style="color: #888888;">${
-          attendee.email
-        }</a></span></div>`;
+        }</div>`;
       })
       .join("");
 

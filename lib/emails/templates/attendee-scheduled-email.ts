@@ -67,10 +67,10 @@ export default class AttendeeScheduledEmail {
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
-      organizer: { name: this.calEvent.organizer.name, email: this.calEvent.organizer.email },
+      organizer: { name: this.calEvent.organizer.name, email: "questions@theskills.com" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
-        email: attendee.email,
+        email: "questions@theskills.com",
       })),
       status: "CONFIRMED",
     });
@@ -88,7 +88,7 @@ export default class AttendeeScheduledEmail {
       },
       to: `${this.attendee.name} <${this.attendee.email}>`,
       from: `${this.calEvent.organizer.name} <${this.getMailerOptions().from}>`,
-      replyTo: this.calEvent.organizer.email,
+      replyTo: "questions@theskills.com",
       subject: `${this.calEvent.language("confirmed_event_type_subject", {
         eventType: this.calEvent.type,
         name: this.calEvent.team?.name || this.calEvent.organizer.name,
@@ -272,9 +272,7 @@ ${getRichDescription(this.calEvent)}
       .map((attendee) => {
         return `<div style="color: #494949; font-weight: 400; line-height: 24px;">${
           attendee?.name || `${this.calEvent.language("guest")}`
-        } <span style="color: #888888"><a href="mailto:${attendee.email}" style="color: #888888;">${
-          attendee.email
-        }</a></span></div>`;
+        }</div>`;
       })
       .join("");
 

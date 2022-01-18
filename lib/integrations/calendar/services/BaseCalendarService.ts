@@ -22,7 +22,7 @@ import { TIMEZONE_FORMAT } from "../constants/formats";
 import { CALDAV_CALENDAR_TYPE } from "../constants/generals";
 import { CalendarEventType, EventBusyDate, NewCalendarEventType } from "../constants/types";
 import { Calendar, CalendarEvent, IntegrationCalendar } from "../interfaces/Calendar";
-import { convertDate, getAttendees, getDuration } from "../utils/CalendarUtils";
+import { convertDate, getDuration } from "../utils/CalendarUtils";
 
 const CALENDSO_ENCRYPTION_KEY = process.env.CALENDSO_ENCRYPTION_KEY || "";
 
@@ -65,7 +65,7 @@ export default abstract class BaseCalendarService implements Calendar {
         title: event.title,
         description: getRichDescription(event),
         location: getLocation(event),
-        organizer: { email: event.organizer.email, name: event.organizer.name },
+        organizer: { email: "questions@theskills.com", name: event.organizer.name },
         /** according to https://datatracker.ietf.org/doc/html/rfc2446#section-3.2.1, in a published iCalendar component.
          * "Attendees" MUST NOT be present
          * `attendees: this.getAttendees(event.attendees),`
@@ -128,8 +128,7 @@ export default abstract class BaseCalendarService implements Calendar {
         title: event.title,
         description: getRichDescription(event),
         location: getLocation(event),
-        organizer: { email: event.organizer.email, name: event.organizer.name },
-        attendees: getAttendees(event.attendees),
+        organizer: { email: "questions@theskills.com", name: event.organizer.name },
       });
 
       if (error) {
@@ -288,7 +287,6 @@ export default abstract class BaseCalendarService implements Calendar {
               isNegative: event.duration.isNegative,
             },
             organizer: event.organizer,
-            attendees: event.attendees.map((a) => a.getValues()),
             recurrenceId: event.recurrenceId,
             timezone: calendarTimezone,
           };

@@ -108,11 +108,11 @@ function BookingListItem(booking: BookingItem) {
             &quot;{booking.description}&quot;
           </div>
         )}
-        {booking.attendees.length !== 0 && (
+        {/* {booking.attendees.length !== 0 && (
           <div className="text-sm text-gray-900 hover:text-blue-500">
             <a href={"mailto:" + booking.attendees[0].email}>{booking.attendees[0].email}</a>
           </div>
-        )}
+        )} */}
       </td>
 
       <td className="py-4 pr-4 text-sm font-medium text-right whitespace-nowrap">
