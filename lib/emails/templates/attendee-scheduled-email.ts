@@ -60,7 +60,7 @@ export default class AttendeeScheduledEmail {
         .slice(0, 6)
         .map((v, i) => (i === 1 ? v + 1 : v)) as DateArray,
       startInputType: "utc",
-      productId: "calendso/ics",
+      productId: "skills/ics",
       title: this.calEvent.language("ics_event_title", {
         eventType: this.calEvent.type,
         name: this.calEvent.attendees[0].name,

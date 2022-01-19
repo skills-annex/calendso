@@ -58,7 +58,7 @@ export default class OrganizerScheduledEmail {
         .slice(0, 6)
         .map((v, i) => (i === 1 ? v + 1 : v)) as DateArray,
       startInputType: "utc",
-      productId: "calendso/ics",
+      productId: "skills/ics",
       title: this.calEvent.language("ics_event_title", {
         eventType: this.calEvent.type,
         name: this.calEvent.attendees[0].name,
@@ -68,7 +68,7 @@ export default class OrganizerScheduledEmail {
       organizer: { name: this.calEvent.organizer.name, email: "questions@theskills.com" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
-        email: attendee.email,
+        email: "questions@theskills.com",
       })),
       status: "CONFIRMED",
     });
@@ -96,6 +96,7 @@ export default class OrganizerScheduledEmail {
       },
       from: `The Skills <${this.getMailerOptions().from}>`,
       to: toAddresses.join(","),
+      replyTo: "questions@theskills.com",
       subject: `${this.calEvent.language("confirmed_event_type_subject", {
         eventType: this.calEvent.type,
         name: this.calEvent.attendees[0].name,
