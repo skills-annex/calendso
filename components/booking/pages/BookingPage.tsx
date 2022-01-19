@@ -172,7 +172,9 @@ const BookingPage = (props: BookingPageProps) => {
 
   const bookingForm = useForm<BookingFormValues>({
     defaultValues: defaultValues(),
+    mode: "onTouched",
   });
+  const errors = bookingForm.formState.errors;
 
   const selectedLocation = useWatch({
     control: bookingForm.control,
@@ -511,15 +513,29 @@ const BookingPage = (props: BookingPageProps) => {
                     <label
                       htmlFor="notes"
                       className="block mb-1 text-sm font-medium text-gray-700 dark:text-white">
-                      {t("additional_notes")}
+                      {t("additional_notes_session")}
                     </label>
                     <textarea
-                      {...bookingForm.register("notes")}
+                      {...bookingForm.register("notes", {
+                        minLength: {
+                          value: 4,
+                          message: t("additional_notes_session_error"),
+                        },
+                      })}
                       id="notes"
+                      required
                       rows={3}
                       className="block w-full border-gray-300 rounded-sm shadow-sm dark:bg-black dark:text-white dark:border-gray-900 focus:ring-black focus:border-brand sm:text-sm"
                       placeholder={t("share_additional_notes")}
                     />
+                    {errors.notes && (
+                      <div
+                        className="text-sm bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-3"
+                        role="alert">
+                        <strong className="block font-bold">{t("oops_error")}</strong>
+                        <div className="block sm:inline">{errors.notes.message}</div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-start space-x-2">
                     <Button type="submit" loading={mutation.isLoading}>

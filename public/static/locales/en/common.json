@@ -1,6 +1,6 @@
 {
   "trial_days_left": "You have $t(day, {\"count\": {{days}} }) left on your PRO trial",
-  "day": "{{count}} day", 
+  "day": "{{count}} day",
   "day_plural": "{{count}} days",
   "upgrade_now": "Upgrade now",
   "accept_invitation": "Accept Invitation",
@@ -576,5 +576,8 @@
   "set_as_away": "Set yourself as away",
   "set_as_free": "Disable away status",
   "user_away": "This user is currently away.",
-  "user_away_description": "The person you are trying to book has set themselves to away, and therefore is not accepting new bookings."
+  "user_away_description": "The person you are trying to book has set themselves to away, and therefore is not accepting new bookings.",
+  "additional_notes_session": "What would you like to discuss with me during this session?",
+  "additional_notes_session_error": "Please include additional notes about what you would like to discuss.",
+  "oops_error": "Oops!"
 }
