@@ -42,7 +42,7 @@ export type CalendarEventType = {
     isNegative: boolean;
   };
   organizer: string;
-  attendees: any[][];
+  attendees?: any[][];
   recurrenceId: ICAL.Time;
   timezone: any;
 };

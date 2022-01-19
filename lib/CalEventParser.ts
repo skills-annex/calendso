@@ -29,9 +29,7 @@ export const getWho = (calEvent: CalendarEvent) => {
   const attendees = calEvent.attendees
     .map((attendee) => {
       return `
-${attendee?.name || calEvent.language("guest")}
-${attendee.email}
-      `;
+${attendee?.name || calEvent.language("guest")}`;
     })
     .join("");
 

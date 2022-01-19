@@ -238,13 +238,6 @@ export default class Office365CalendarService implements Calendar {
         dateTime: event.endTime,
         timeZone: event.organizer.timeZone,
       },
-      attendees: event.attendees.map((attendee) => ({
-        emailAddress: {
-          address: attendee.email,
-          name: attendee.name,
-        },
-        type: "required",
-      })),
       location: event.location ? { displayName: getLocation(event) } : undefined,
     };
   };

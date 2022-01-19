@@ -58,17 +58,17 @@ export default class OrganizerScheduledEmail {
         .slice(0, 6)
         .map((v, i) => (i === 1 ? v + 1 : v)) as DateArray,
       startInputType: "utc",
-      productId: "calendso/ics",
+      productId: "skills/ics",
       title: this.calEvent.language("ics_event_title", {
         eventType: this.calEvent.type,
         name: this.calEvent.attendees[0].name,
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
-      organizer: { name: this.calEvent.organizer.name, email: this.calEvent.organizer.email },
+      organizer: { name: this.calEvent.organizer.name, email: "questions@theskills.com" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
-        email: attendee.email,
+        email: "questions@theskills.com",
       })),
       status: "CONFIRMED",
     });
@@ -96,6 +96,7 @@ export default class OrganizerScheduledEmail {
       },
       from: `The Skills <${this.getMailerOptions().from}>`,
       to: toAddresses.join(","),
+      replyTo: "questions@theskills.com",
       subject: `${this.calEvent.language("confirmed_event_type_subject", {
         eventType: this.calEvent.type,
         name: this.calEvent.attendees[0].name,
@@ -263,9 +264,7 @@ ${getRichDescription(this.calEvent)}
       .map((attendee) => {
         return `<div style="color: #494949; font-weight: 400; line-height: 24px;">${
           attendee?.name || `${this.calEvent.language("guest")}`
-        } <span style="color: #888888"><a href="mailto:${attendee.email}" style="color: #888888;">${
-          attendee.email
-        }</a></span></div>`;
+        }</div>`;
       })
       .join("");
 

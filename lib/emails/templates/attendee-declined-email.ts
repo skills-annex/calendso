@@ -23,7 +23,7 @@ export default class AttendeeDeclinedEmail extends AttendeeScheduledEmail {
     return {
       to: `${this.attendee.name} <${this.attendee.email}>`,
       from: `${this.calEvent.organizer.name} <${this.getMailerOptions().from}>`,
-      replyTo: this.calEvent.organizer.email,
+      replyTo: "questions@theskills.com",
       subject: `${this.calEvent.language("event_declined_subject", {
         eventType: this.calEvent.type,
         name: this.calEvent.team?.name || this.calEvent.organizer.name,
