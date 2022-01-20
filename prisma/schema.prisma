@@ -47,7 +47,7 @@ model EventType {
   periodCountCalendarDays Boolean?
   requiresConfirmation    Boolean                @default(false)
   disableGuests           Boolean                @default(false)
-  minimumBookingNotice    Int                    @default(120)
+  minimumBookingNotice    Int                    @default(1440)
   schedulingType          SchedulingType?
   Schedule                Schedule[]
   price                   Int                    @default(0)
