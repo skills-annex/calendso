@@ -295,6 +295,8 @@ const loggedInViewerRouter = createProtectedRouter()
             AND: [
               { NOT: { status: { equals: BookingStatus.CANCELLED } } },
               { NOT: { status: { equals: BookingStatus.REJECTED } } },
+              { NOT: { confirmed: { equals: false } } }, // hide unconfirmed and unpaid bookings https://app.clickup.com/t/27pjd5c
+              { NOT: { paid: { equals: false } } },
             ],
           },
         ],
