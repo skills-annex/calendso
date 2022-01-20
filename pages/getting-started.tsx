@@ -54,7 +54,6 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
       length: 30,
       locations: [{ type: "integrations:daily" }],
       disableGuests: true,
-      minimumBookingNotice: 1440,
     },
   ];
 
