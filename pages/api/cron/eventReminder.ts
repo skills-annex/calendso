@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         uid: true,
       },
     });
-    console.log({ bookings });
+
     const reminders = await prisma.reminderMail.findMany({
       where: {
         reminderType: ReminderType.ATTENDEE_REMINDER,
