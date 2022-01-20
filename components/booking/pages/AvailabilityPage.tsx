@@ -33,6 +33,7 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
   const { rescheduleUid } = router.query;
   const { isReady } = useTheme(profile.theme);
   const { t } = useLocale();
+  const hasAvailability = workingHours.length > 0;
 
   const selectedDate = useMemo(() => {
     const dateString = asStringOrNull(router.query.date);
@@ -194,36 +195,44 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
 
                   <p className="mt-3 mb-8 text-gray-600 dark:text-gray-200">{eventType.description}</p>
                 </div>
-                <DatePicker
-                  date={selectedDate}
-                  periodType={eventType?.periodType}
-                  periodStartDate={eventType?.periodStartDate}
-                  periodEndDate={eventType?.periodEndDate}
-                  periodDays={eventType?.periodDays}
-                  periodCountCalendarDays={eventType?.periodCountCalendarDays}
-                  onDatePicked={changeDate}
-                  workingHours={workingHours}
-                  weekStart={profile.weekStart || "Sunday"}
-                  eventLength={eventType.length}
-                  minimumBookingNotice={eventType.minimumBookingNotice}
-                />
+                {hasAvailability ? (
+                  <>
+                    <DatePicker
+                      date={selectedDate}
+                      periodType={eventType?.periodType}
+                      periodStartDate={eventType?.periodStartDate}
+                      periodEndDate={eventType?.periodEndDate}
+                      periodDays={eventType?.periodDays}
+                      periodCountCalendarDays={eventType?.periodCountCalendarDays}
+                      onDatePicked={changeDate}
+                      workingHours={workingHours}
+                      weekStart={profile.weekStart || "Sunday"}
+                      eventLength={eventType.length}
+                      minimumBookingNotice={eventType.minimumBookingNotice}
+                    />
 
-                <div className="block mt-4 ml-1 sm:hidden">
-                  <TimezoneDropdown />
-                </div>
+                    <div className="block mt-4 ml-1 sm:hidden">
+                      <TimezoneDropdown />
+                    </div>
 
-                {selectedDate && (
-                  <AvailableTimes
-                    timeFormat={timeFormat}
-                    minimumBookingNotice={eventType.minimumBookingNotice}
-                    eventTypeId={eventType.id}
-                    slotInterval={eventType.slotInterval}
-                    eventLength={eventType.length}
-                    date={selectedDate}
-                    users={eventType.users}
-                    schedulingType={eventType.schedulingType ?? null}
-                    currentBookings={currentBookings}
-                  />
+                    {selectedDate && (
+                      <AvailableTimes
+                        timeFormat={timeFormat}
+                        minimumBookingNotice={eventType.minimumBookingNotice}
+                        eventTypeId={eventType.id}
+                        slotInterval={eventType.slotInterval}
+                        eventLength={eventType.length}
+                        date={selectedDate}
+                        users={eventType.users}
+                        schedulingType={eventType.schedulingType ?? null}
+                        currentBookings={currentBookings}
+                      />
+                    )}
+                  </>
+                ) : (
+                  <div className="m-auto px-8">
+                    <p className="text-neutral-500 dark:text-white">{t("user_away_description")}</p>
+                  </div>
                 )}
               </div>
             </div>

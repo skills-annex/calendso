@@ -67,17 +67,18 @@ export function getWorkingHours(
   },
   availability: { days: number[]; startTime: ConfigType; endTime: ConfigType }[]
 ) {
+  // TheSkills - disabling this so that instructors can set themselves to unavailable
   // clearly bail when availability is not set, set everything available.
-  if (!availability.length) {
-    return [
-      {
-        days: [0, 1, 2, 3, 4, 5, 6],
-        // shorthand for: dayjs().startOf("day").tz(timeZone).diff(dayjs.utc().startOf("day"), "minutes")
-        startTime: MINUTES_DAY_START,
-        endTime: MINUTES_DAY_END,
-      },
-    ];
-  }
+  // if (!availability.length) {
+  //   return [
+  //     {
+  //       days: [0, 1, 2, 3, 4, 5, 6],
+  //       // shorthand for: dayjs().startOf("day").tz(timeZone).diff(dayjs.utc().startOf("day"), "minutes")
+  //       startTime: MINUTES_DAY_START,
+  //       endTime: MINUTES_DAY_END,
+  //     },
+  //   ];
+  // }
 
   const utcOffset = relativeTimeUnit.utcOffset ?? dayjs().tz(relativeTimeUnit.timeZone).utcOffset();
 
