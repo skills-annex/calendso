@@ -27,6 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: {
         confirmed: true,
         rejected: false,
+        status: {
+          equals: "ACCEPTED",
+        },
         startTime: {
           lte: dayjs().add(interval, "minutes").toDate(),
           gte: dayjs().toDate(),

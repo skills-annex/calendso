@@ -168,6 +168,7 @@ ${getRichDescription(this.calEvent)}
                               ${this.getWho()}
                               ${this.getLocation()}
                               ${this.calEvent.description ? this.getAdditionalNotes() : ""}
+                              ${this.getRecordingNotice()}
                             </div>
                           </td>
                         </tr>
@@ -194,7 +195,9 @@ ${getRichDescription(this.calEvent)}
                         <tr>
                           <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                             <div style="font-family:Roboto, Helvetica, sans-serif;font-size:16px;font-weight:500;line-height:0px;text-align:left;color:#3E3E3E;">
-                              ${this.getManageLink()}
+                            <!-- ${this.getManageLink()}
+                              TODO: fix reschedule link -->
+                              <p>If you need to cancel or reschedule, please email <a href="mailto:questions@theskills.com">questions@theskills.com</a></p>
                             </div>
                           </td>
                         </tr>
@@ -298,6 +301,18 @@ ${getRichDescription(this.calEvent)}
       <p style="color: #494949; font-weight: 400; line-height: 24px;">${
         this.calEvent.description ? this.calEvent.description : ""
       }</p>
+    </div>
+    `;
+  }
+
+  protected getRecordingNotice(): string {
+    return `
+    <p style="height: 6px"></p>
+    <div style="line-height: 6px;">
+      <p style="color: #494949;">${this.calEvent.language("recording_notice_title")}</p>
+      <p style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+        "recording_notice"
+      )}</p>
     </div>
     `;
   }

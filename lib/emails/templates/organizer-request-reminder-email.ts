@@ -135,7 +135,9 @@ ${process.env.BASE_URL} + "/bookings/upcoming"
                               <tr>
                                 <td align="center" bgcolor="#292929" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#292929;" valign="middle">
                                   <p style="display:inline-block;background:#292929;color:#ffffff;font-family:Roboto, Helvetica, sans-serif;font-size:16px;font-weight:500;line-height:120%;margin:0;text-decoration:none;text-transform:none;padding:10px 25px;mso-padding-alt:0px;border-radius:3px;">
-                                    ${this.getManageLink()}
+                                  <!-- ${this.getManageLink()}
+                                  TODO: fix reschedule link -->
+                                    <p>If you need to cancel or reschedule, please email <a href="mailto:questions@theskills.com">questions@theskills.com</a></p>
                                   </p>
                                 </td>
                               </tr>

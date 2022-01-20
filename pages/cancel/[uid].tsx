@@ -1,31 +1,39 @@
-import { CalendarIcon, XIcon } from "@heroicons/react/solid";
-import dayjs from "dayjs";
+/* import { CalendarIcon, XIcon } from "@heroicons/react/solid";
+import dayjs from "dayjs"; */
 import { GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
-import { useState } from "react";
 
+/* import { useRouter } from "next/router";
+ */
+
+/* import { useState } from "react";
+ */
 import { asStringOrUndefined } from "@lib/asStringOrNull";
 import { getSession } from "@lib/auth";
 import { useLocale } from "@lib/hooks/useLocale";
 import prisma from "@lib/prisma";
-import { collectPageParameters, telemetryEventTypes, useTelemetry } from "@lib/telemetry";
+
+/* import {
+   collectPageParameters, telemetryEventTypes,
+  useTelemetry,
+} from "@lib/telemetry"; */
 import { inferSSRProps } from "@lib/types/inferSSRProps";
 
 import CustomBranding from "@components/CustomBranding";
 import { HeadSeo } from "@components/seo/head-seo";
-import { Button } from "@components/ui/Button";
 
+/* import { Button } from "@components/ui/Button";
+ */
 import { ssrInit } from "@server/lib/ssr";
 
 export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
   const { t } = useLocale();
   // Get router variables
-  const router = useRouter();
-  const { uid } = router.query;
+  // const router = useRouter();
+  /*   const { uid } = router.query;
   const [is24h] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(props.booking ? null : t("booking_already_cancelled"));
-  const telemetry = useTelemetry();
+  const telemetry = useTelemetry(); */
 
   return (
     <div>
@@ -35,7 +43,15 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
       />
       <CustomBranding val={props.profile?.brandColor} />
       <main className="max-w-3xl mx-auto my-24">
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <img className={"h-8 w-auto"} alt="Skills" title="Skills" src="/the-skills-logo-black.svg" />
+        <div className="bg-white border-gray-200 rounded-sm sm:dark:border-gray-600 dark:bg-gray-900 md:border py-6 text-center mt-3">
+          If you need to cancel or reschedule, please email{" "}
+          <a href="mailto:questions@theskills.com" className="text-teal">
+            questions@theskills.com
+          </a>
+          .
+        </div>
+        {/* <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 my-4 transition-opacity sm:my-0" aria-hidden="true">
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
@@ -140,7 +156,7 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   );

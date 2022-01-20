@@ -559,5 +559,7 @@
   "error_password_mismatch": "Le password non corrispondono.",
   "error_required_field": "Questo campo è richiesto.",
   "team_view_user_availability": "Visualizza la disponibilità degli utenti",
-  "team_view_user_availability_disabled": "L'utente deve accettare l'invito per visualizzare la disponibilità"
+  "team_view_user_availability_disabled": "L'utente deve accettare l'invito per visualizzare la disponibilità",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }

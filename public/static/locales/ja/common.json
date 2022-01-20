@@ -525,5 +525,7 @@
   "calendar": "カレンダー",
   "not_installed": "インストールされていません",
   "error_password_mismatch": "パスワードが一致しません。",
-  "error_required_field": "この項目は必須です。"
+  "error_required_field": "この項目は必須です。",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }

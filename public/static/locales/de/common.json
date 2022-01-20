@@ -570,5 +570,7 @@
   "error_required_field": "Dieses Feld ist erforderlich.",
   "status": "Status",
   "team_view_user_availability": "Verfügbarkeit des Benutzers anzeigen",
-  "team_view_user_availability_disabled": "Der Benutzer muss die Einladung annehmen, um die Verfügbarkeit zu sehen"
+  "team_view_user_availability_disabled": "Der Benutzer muss die Einladung annehmen, um die Verfügbarkeit zu sehen",
+  "recording_notice_title": "",
+  "recording_notice": ""
 }
