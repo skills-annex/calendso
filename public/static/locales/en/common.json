@@ -580,6 +580,6 @@
   "additional_notes_session": "What would you like to discuss with me during this session?",
   "additional_notes_session_error": "Please include additional notes about what you would like to discuss.",
   "oops_error": "Oops!",
-   "recording_notice_title": "Recording notice",
+  "recording_notice_title": "Recording notice",
   "recording_notice": "For quality assurance, your video call will be recorded. If you have any questions, please reach out to <a href='mailto: questions@theskills.com'>questions@theskills.com</a>"
 }
