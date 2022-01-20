@@ -111,6 +111,6 @@ ${getWho(calEvent)}
 ${calEvent.language("where")}:
 ${getLocation(calEvent)}
 ${getAdditionalNotes(calEvent)}
-${getManageLink(calEvent)}
+<!--${getManageLink(calEvent)}-->
   `.trim();
 };
