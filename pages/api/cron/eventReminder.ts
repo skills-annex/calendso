@@ -27,6 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: {
         confirmed: true,
         rejected: false,
+        status: {
+          equals: "ACCEPTED",
+        },
         startTime: {
           lte: dayjs().add(interval, "minutes").toDate(),
           gte: dayjs().toDate(),
@@ -63,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         uid: true,
       },
     });
-
+    console.log({ bookings });
     const reminders = await prisma.reminderMail.findMany({
       where: {
         reminderType: ReminderType.ATTENDEE_REMINDER,
