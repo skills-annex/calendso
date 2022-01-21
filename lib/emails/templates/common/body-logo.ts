@@ -2,8 +2,8 @@ import { IS_PRODUCTION, BASE_URL } from "@lib/config/constants";
 
 export const emailBodyLogo = (): string => {
   const image = IS_PRODUCTION
-    ? BASE_URL + "/emails/CalLogo@2x.png"
-    : "https://app.cal.com/emails/CalLogo@2x.png";
+    ? BASE_URL + "/emails/the-skills-logo-black.png"
+    : "https://meetings.theskills.com/emails/the-skills-logo-black.png";
 
   return `
   <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->

@@ -49,7 +49,7 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
         <title>
           {t("payment")} | {eventName} | The Skills
         </title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon/favicon.ico" />
       </Head>
       <main className="max-w-3xl py-24 mx-auto">
         <div className="fixed inset-0 z-50 overflow-y-auto">

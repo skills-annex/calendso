@@ -412,7 +412,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
     <div className="min-h-screen bg-brand" data-testid="onboarding">
       <Head>
         <title>Skills 1on1 Instructor Dashboard - {t("getting_started")}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon/favicon.ico" />
       </Head>
 
       {isSubmitting && (

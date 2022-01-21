@@ -323,7 +323,7 @@ const EventTypesPage = () => {
     <div>
       <Head>
         <title>Home | The Skills</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon/favicon.ico" />
       </Head>
       <Shell
         heading={t("event_types_page_title")}
