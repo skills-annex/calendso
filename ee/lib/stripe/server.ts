@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 
 import { sendAwaitingPaymentEmail, sendOrganizerPaymentRefundFailedEmail } from "@lib/emails/email-manager";
 import { getErrorFromUnknown } from "@lib/errors";
-import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
 import { getInstructor } from "@lib/integrations/Thetis/ThetisApiAdapter";
+import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
 import prisma from "@lib/prisma";
 
 import { createPaymentLink } from "./client";
@@ -83,6 +83,8 @@ export async function handlePayment(
   }
   if (!stripeCustomer) return { notFound: true };
 
+  const stripeChargeDescription = `1on1 Meeting with ${instructor.data?.publicName}`;
+
   const params: Stripe.PaymentIntentCreateParams = {
     amount: selectedEventType.price,
     setup_future_usage: "off_session",
@@ -90,7 +92,7 @@ export async function handlePayment(
     payment_method_types: ["card"],
     application_fee_amount: paymentFee,
     customer: stripeCustomer?.id,
-    description: selectedEventType.description,
+    description: stripeChargeDescription,
     transfer_data: {
       destination: stripeConnectAccountId,
     },
