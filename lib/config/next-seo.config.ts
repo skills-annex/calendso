@@ -3,7 +3,7 @@ import { DefaultSeoProps } from "next-seo";
 import { HeadSeoProps } from "@components/seo/head-seo";
 
 const seoImages = {
-  default: "/the-skills-logo-black.png",
+  default: "/emails/the-skills-logo-black.png",
   // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
   // https://github.com/vercel/og-image
   // ogImage: "https://og-image-one-pi.vercel.app/",

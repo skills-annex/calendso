@@ -2,7 +2,7 @@ import { IS_PRODUCTION, BASE_URL } from "@lib/config/constants";
 
 export const emailBodyLogo = (): string => {
   const image = IS_PRODUCTION
-    ? BASE_URL + "/emails/the-skills-logo-black.png"
+    ? `${BASE_URL}/emails/the-skills-logo-black.png`
     : "https://images.ctfassets.net/1qt0q58mfxo8/6xHsFPOLJUVWqEH8XUbq9c/419415185f681ad2d77688182522f83b/the-skills-logo-black_2.png";
 
   return `
@@ -21,9 +21,9 @@ export const emailBodyLogo = (): string => {
                       <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
                         <tbody>
                           <tr>
-                            <td style="width:52px;">
+                            <td style="width:150px;">
                               <a href="${BASE_URL}" target="_blank">
-                                <img height="150" src="${image}" style="border:0;display:block;outline:none;text-decoration:none;height:150px;width:100%;font-size:13px;" width="52" />
+                                <img height="52" src="${image}" style="border:0;display:block;outline:none;text-decoration:none;height:52px;width:100%;font-size:13px;" width="150" />
                               </a>
                             </td>
                           </tr>
