@@ -5,7 +5,7 @@ import { BASE_URL } from "@lib/config/constants";
 import { HeadSeoProps } from "@components/seo/head-seo";
 
 const seoImages = {
-  default: `${BASE_URL}/emails/the-skills-logo-black.png`,
+  default: `${BASE_URL}/the-skills-logo-black-1300x453.png`,
   // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
   // https://github.com/vercel/og-image
   // ogImage: "https://og-image-one-pi.vercel.app/",
