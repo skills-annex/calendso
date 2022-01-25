@@ -63,17 +63,19 @@ const buildSeoMeta = (pageProps: {
     ],
   };
 };
+// TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+// https://github.com/vercel/og-image
 
-const constructImage = (name: string, description: string, username: string): string => {
-  return (
-    encodeURIComponent("Meet **" + name + "** <br>" + description).replace(/'/g, "%27") +
-    ".png?md=1&images=https%3A%2F%2Fcal.com%2Flogo-white.svg&images=" +
-    (process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL) +
-    "/" +
-    username +
-    "/avatar.png"
-  );
-};
+// const constructImage = (name: string, description: string, username: string): string => {
+//   return (
+//     encodeURIComponent("Meet **" + name + "** <br>" + description).replace(/'/g, "%27") +
+//     ".png?md=1&images=https%3A%2F%2Fcal.com%2Flogo-white.svg&images=" +
+//     (process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL) +
+//     "/" +
+//     username +
+//     "/avatar.png"
+//   );
+// };
 
 export const HeadSeo: React.FC<HeadSeoProps & { children?: never }> = (props) => {
   const defaultUrl = getBrowserInfo()?.url;
@@ -82,8 +84,8 @@ export const HeadSeo: React.FC<HeadSeoProps & { children?: never }> = (props) =>
   const {
     title,
     description,
-    name = null,
-    username = null,
+    // name = null,
+    // username = null,
     siteName,
     canonical = defaultUrl,
     nextSeoProps = {},
@@ -91,24 +93,26 @@ export const HeadSeo: React.FC<HeadSeoProps & { children?: never }> = (props) =>
 
   const truncatedDescription = description.length > 24 ? description.substring(0, 23) + "..." : description;
   const pageTitle = title + " | The Skills";
-  let seoObject = buildSeoMeta({
+  const seoObject = buildSeoMeta({
     title: pageTitle,
     image,
     description: truncatedDescription,
     canonical,
     siteName,
   });
+  // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+  // https://github.com/vercel/og-image
 
-  if (name && username) {
-    const pageImage = getSeoImage("ogImage") + constructImage(name, truncatedDescription, username);
-    seoObject = buildSeoMeta({
-      title: pageTitle,
-      description: truncatedDescription,
-      image: pageImage,
-      canonical,
-      siteName,
-    });
-  }
+  // if (name && username) {
+  //   const pageImage = getSeoImage("ogImage") + constructImage(name, truncatedDescription, username);
+  //   seoObject = buildSeoMeta({
+  //     title: pageTitle,
+  //     description: truncatedDescription,
+  //     image: pageImage,
+  //     canonical,
+  //     siteName,
+  //   });
+  // }
 
   const seoProps: NextSeoProps = merge(nextSeoProps, seoObject);
 

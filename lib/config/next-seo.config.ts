@@ -4,7 +4,9 @@ import { HeadSeoProps } from "@components/seo/head-seo";
 
 const seoImages = {
   default: "/the-skills-logo-black.png",
-  ogImage: "https://og-image-one-pi.vercel.app/",
+  // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+  // https://github.com/vercel/og-image
+  // ogImage: "https://og-image-one-pi.vercel.app/",
 };
 
 export const getSeoImage = (key: keyof typeof seoImages): string => {
