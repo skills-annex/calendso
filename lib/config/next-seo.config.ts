@@ -6,7 +6,7 @@ import { HeadSeoProps } from "@components/seo/head-seo";
 
 const seoImages = {
   default: `${BASE_URL}/theskills-og.jpg`,
-  // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+  // TheSkills - commented out until we deploy our own Open Graph Image as a Service.
   // https://github.com/vercel/og-image
   // ogImage: "https://og-image-one-pi.vercel.app/",
 };

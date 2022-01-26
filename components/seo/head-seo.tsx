@@ -63,7 +63,7 @@ const buildSeoMeta = (pageProps: {
     ],
   };
 };
-// TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+// TheSkills - commented out until we deploy our own Open Graph Image as a Service.
 // https://github.com/vercel/og-image
 
 // const constructImage = (name: string, description: string, username: string): string => {
@@ -100,7 +100,7 @@ export const HeadSeo: React.FC<HeadSeoProps & { children?: never }> = (props) =>
     canonical,
     siteName,
   });
-  // TheSkills - commented out until we deoploy our own Open Graph Image as a Service.
+  // TheSkills - commented out until we deploy our own Open Graph Image as a Service.
   // https://github.com/vercel/og-image
 
   // if (name && username) {
