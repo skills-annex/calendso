@@ -60,6 +60,7 @@ module.exports = () => plugins.reduce((acc, next) => next(acc), {
     THETIS_SITE_HOST: process.env.THETIS_SITE_HOST,
     CRON_API_KEY: process.env.CRON_API_KEY,
     THETIS_ADMIN_USER_EMAILS: process.env.THETIS_ADMIN_USER_EMAILS,
+    BASE_URL: process.env.BASE_URL
   },
   eslint: {
     // This allows production builds to successfully complete even if the project has ESLint errors.

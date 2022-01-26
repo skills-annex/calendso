@@ -275,7 +275,7 @@ const BookingPage = (props: BookingPageProps) => {
               })}{" "}
           | The Skills
         </title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon/favicon.ico" />
       </Head>
       {"brandColor" in props.profile && <CustomBranding val={props.profile.brandColor} />}
       <main className="max-w-3xl mx-auto my-0 rounded-sm sm:my-24 sm:border sm:dark:border-gray-600">

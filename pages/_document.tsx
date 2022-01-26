@@ -21,11 +21,11 @@ class MyDocument extends Document<Props> {
               }}
             />
           )}
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+          <link rel="apple-icon-180x180" sizes="180x180" href="/favicon/apple-icon-180x180.png" />
+          <link rel="icon" type="image/png" sizes="36x36" href="/favicon/android-icon-36x36.png" />
+          <link rel="icon" type="image/x-icon" sizes="16x16" href="/favicon/favicon.ico" />
           <link rel="manifest" href="/site.webmanifest" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
+          <link rel="mask-icon" href="/favicon/apple-icon-180x180.png" color="#000000" />
           <meta name="msapplication-TileColor" content="#ff0000" />
           <meta name="theme-color" content="#ffffff" />
         </Head>

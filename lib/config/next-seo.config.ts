@@ -1,10 +1,14 @@
 import { DefaultSeoProps } from "next-seo";
 
+import { BASE_URL } from "@lib/config/constants";
+
 import { HeadSeoProps } from "@components/seo/head-seo";
 
 const seoImages = {
-  default: "/the-skills-logo-black.png",
-  ogImage: "https://og-image-one-pi.vercel.app/",
+  default: `${BASE_URL}/theskills-og.jpg`,
+  // TheSkills - commented out until we deploy our own Open Graph Image as a Service.
+  // https://github.com/vercel/og-image
+  // ogImage: "https://og-image-one-pi.vercel.app/",
 };
 
 export const getSeoImage = (key: keyof typeof seoImages): string => {

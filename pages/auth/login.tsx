@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { ErrorCode, getSession } from "@lib/auth";
-import { WEBSITE_URL } from "@lib/config/constants";
 import { useLocale } from "@lib/hooks/useLocale";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
 

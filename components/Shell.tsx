@@ -130,7 +130,7 @@ export default function Shell(props: {
   const router = useRouter();
   const { loading } = useRedirectToLoginIfUnauthenticated();
   const { isRedirectingToOnboarding } = useRedirectToOnboardingIfNeeded();
-
+  const skillsHome = process.env.THETIS_SITE_HOST || "https://www.theskills.com";
   const telemetry = useTelemetry();
 
   const navigation = [
@@ -207,13 +207,13 @@ export default function Shell(props: {
           <div className="flex flex-col w-14 lg:w-56">
             <div className="flex flex-col flex-1 h-0 bg-white border-r border-gray-200">
               <div className="flex flex-col flex-1 pt-3 pb-4 overflow-y-auto lg:pt-5">
-                <Link href="/event-types">
+                <Link href={skillsHome}>
                   <a className="px-4 md:hidden lg:inline">
-                    <Logo small />
+                    <Logo />
                   </a>
                 </Link>
                 {/* logo icon for tablet */}
-                <Link href="/event-types">
+                <Link href={skillsHome}>
                   <a className="md:inline lg:hidden">
                     <Logo small icon />
                   </a>
@@ -264,9 +264,9 @@ export default function Shell(props: {
             )}>
             {/* show top navigation for md and smaller (tablet and phones) */}
             <nav className="flex items-center justify-between p-4 bg-white border-b border-gray-200 md:hidden">
-              <Link href="/event-types">
+              <Link href={skillsHome}>
                 <a>
-                  <Logo />
+                  <Logo small />
                 </a>
               </Link>
               <div className="flex items-center self-center gap-3">
