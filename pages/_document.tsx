@@ -21,6 +21,21 @@ class MyDocument extends Document<Props> {
               }}
             />
           )}
+          {process.env.HOTJAR_ANALYTICS_ID && (
+            <script
+              type="text/javascript"
+              dangerouslySetInnerHTML={{
+                __html: `(function(h,o,t,j,a,r){
+                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                  h._hjSettings={hjid:"${process.env.HOTJAR_ANALYTICS_ID}",hjsv:6};
+                  a=o.getElementsByTagName('head')[0];
+                  r=o.createElement('script');r.async=1;
+                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                  a.appendChild(r);
+                })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
+              }}
+            />
+          )}
           <link rel="apple-icon-180x180" sizes="180x180" href="/favicon/apple-icon-180x180.png" />
           <link rel="icon" type="image/png" sizes="36x36" href="/favicon/android-icon-36x36.png" />
           <link rel="icon" type="image/x-icon" sizes="16x16" href="/favicon/favicon.ico" />
