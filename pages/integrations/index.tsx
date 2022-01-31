@@ -495,7 +495,7 @@ function ConnectOrDisconnectIntegrationButton(props: {
               {...btnProps}
               type="dark"
               data-testid="integration-connection-button"
-              style={{ width: "220px", height: "auto" }}
+              style={{ width: "220px", height: "50px" }}
             />
           );
         }
