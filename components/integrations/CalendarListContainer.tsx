@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from "react";
+import GoogleButton from "react-google-button";
 import { useMutation } from "react-query";
 import Select from "react-select";
 
@@ -247,11 +248,23 @@ function CalendarList(props: Props) {
               actions={
                 <ConnectIntegration
                   type={item.type}
-                  render={(btnProps) => (
-                    <Button color="secondary" {...btnProps} data-testid="integration-connection-button">
-                      {t("connect")}
-                    </Button>
-                  )}
+                  render={(btnProps) => {
+                    if (item.type === "google_calendar") {
+                      return (
+                        <GoogleButton
+                          {...btnProps}
+                          type="dark"
+                          data-testid="integration-connection-button"
+                          style={{ width: "220px", height: "auto" }}
+                        />
+                      );
+                    }
+                    return (
+                      <Button color="secondary" {...btnProps} data-testid="integration-connection-button">
+                        {t("connect")}
+                      </Button>
+                    );
+                  }}
                   onOpenChange={() => props.onChanged()}
                 />
               }
