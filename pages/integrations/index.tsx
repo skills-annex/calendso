@@ -3,6 +3,7 @@ import { ClipboardIcon } from "@heroicons/react/solid";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import Image from "next/image";
 import React, { useState } from "react";
+import GoogleButton from "react-google-button";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { QueryCell } from "@lib/QueryCell";
@@ -487,11 +488,23 @@ function ConnectOrDisconnectIntegrationButton(props: {
   return (
     <ConnectIntegration
       type={props.type}
-      render={(btnProps) => (
-        <Button color="secondary" {...btnProps} data-testid="integration-connection-button">
-          {t("connect")}
-        </Button>
-      )}
+      render={(btnProps) => {
+        if (props.type === "google_calendar") {
+          return (
+            <GoogleButton
+              {...btnProps}
+              type="dark"
+              data-testid="integration-connection-button"
+              style={{ width: "220px", height: "auto" }}
+            />
+          );
+        }
+        return (
+          <Button color="secondary" {...btnProps} data-testid="integration-connection-button">
+            {t("connect")}
+          </Button>
+        );
+      }}
       onOpenChange={handleOpenChange}
     />
   );
