@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 import { IS_PRODUCTION } from "@lib/config/constants";
+import emailToLowerCase from "@lib/hooks/email-to-lower-case";
 
 declare global {
   // eslint-disable-next-line no-var
@@ -16,5 +17,7 @@ export const prisma =
 if (!IS_PRODUCTION) {
   globalThis.prisma = prisma;
 }
+
+emailToLowerCase(prisma);
 
 export default prisma;
