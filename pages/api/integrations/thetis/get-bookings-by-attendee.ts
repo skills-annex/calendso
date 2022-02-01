@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { email }: { email: string } = req.body;
-    console.log({ email });
+
     if (!email) {
       logger.error("Could not get bookings for this attendee: missing email");
       return res.status(400).json({ message: "Could not get bookings for this attendee: missing email" });
