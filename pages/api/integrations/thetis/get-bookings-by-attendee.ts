@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { email }: { email: string } = req.body;
-
+    console.log({ email });
     if (!email) {
       logger.error("Could not get bookings for this attendee: missing email");
       return res.status(400).json({ message: "Could not get bookings for this attendee: missing email" });
@@ -22,10 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const bookingsByAttendee = await prisma.booking.findMany({
       where: {
         attendees: {
-          every: {
-            email: {
-              equals: email,
-            },
+          some: {
+            email,
           },
         },
       },
@@ -40,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title: true,
       },
     });
-
+    console.log({ bookingsByAttendee });
     return res.status(200).json(bookingsByAttendee);
   }
 }
