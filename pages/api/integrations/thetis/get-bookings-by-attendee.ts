@@ -20,6 +20,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const bookingsByAttendee = await prisma.booking.findMany({
+      orderBy: [
+        {
+          startTime: "asc",
+        },
+      ],
       where: {
         attendees: {
           some: {
@@ -30,15 +35,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       select: {
         confirmed: true,
         createdAt: true,
-        dailyRef: true,
         description: true,
         eventType: true,
+        references: true,
         startTime: true,
+        endTime: true,
         status: true,
         title: true,
+        uid: true,
+        user: true,
       },
     });
-    console.log({ bookingsByAttendee });
     return res.status(200).json(bookingsByAttendee);
   }
 }

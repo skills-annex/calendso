@@ -1,39 +1,78 @@
-/* import { CalendarIcon, XIcon } from "@heroicons/react/solid";
-import dayjs from "dayjs"; */
+import { CalendarIcon, XIcon } from "@heroicons/react/solid";
+import dayjs from "dayjs";
 import { GetServerSidePropsContext } from "next";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
-/* import { useRouter } from "next/router";
- */
-
-/* import { useState } from "react";
- */
 import { asStringOrUndefined } from "@lib/asStringOrNull";
 import { getSession } from "@lib/auth";
 import { useLocale } from "@lib/hooks/useLocale";
 import prisma from "@lib/prisma";
-
-/* import {
-   collectPageParameters, telemetryEventTypes,
-  useTelemetry,
-} from "@lib/telemetry"; */
+import { collectPageParameters, telemetryEventTypes, useTelemetry } from "@lib/telemetry";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
 
 import CustomBranding from "@components/CustomBranding";
+import { Dialog, DialogTrigger } from "@components/Dialog";
+import ConfirmationDialogContent from "@components/dialog/ConfirmationDialogContent";
 import { HeadSeo } from "@components/seo/head-seo";
+import { Button } from "@components/ui/Button";
 
-/* import { Button } from "@components/ui/Button";
- */
 import { ssrInit } from "@server/lib/ssr";
 
 export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
   const { t } = useLocale();
   // Get router variables
-  // const router = useRouter();
-  /*   const { uid } = router.query;
+  const router = useRouter();
+  const { uid } = router.query;
   const [is24h] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(props.booking ? null : t("booking_already_cancelled"));
-  const telemetry = useTelemetry(); */
+  const telemetry = useTelemetry();
+
+  const getRefundType = (startTime: string) => {
+    const today = dayjs();
+    const twentyFourHours = 1440;
+    const twoHours = 120;
+    const timeToBooking = dayjs(startTime).diff(today, "m");
+
+    if (timeToBooking >= twentyFourHours) {
+      return t("refund_full");
+    } else if (timeToBooking < twentyFourHours && timeToBooking > twoHours) {
+      return t("refund_credit");
+    } else if (timeToBooking < twoHours) {
+      return t("refund_refused");
+    }
+  };
+  const handleCancellation = async () => {
+    setLoading(true);
+
+    const payload = {
+      uid: uid,
+    };
+
+    telemetry.withJitsu((jitsu) =>
+      jitsu.track(telemetryEventTypes.bookingCancelled, collectPageParameters())
+    );
+
+    const res = await fetch("/api/cancel", {
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    });
+
+    if (res.status >= 200 && res.status < 300 && props?.profile) {
+      await router.push(
+        `/cancel/success?name=${props.profile.name}&title=${props.booking.title}&eventPage=${
+          props.profile.slug
+        }&team=${props.booking.eventType?.team ? 1 : 0}`
+      );
+    } else {
+      setLoading(false);
+      setError(`${t("error_with_status_code_occured", { status: res.status })} ${t("please_try_again")}`);
+    }
+  };
 
   return (
     <div>
@@ -44,14 +83,7 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
       <CustomBranding val={props.profile?.brandColor} />
       <main className="max-w-3xl mx-auto my-24">
         <img className={"h-8 w-auto"} alt="Skills" title="Skills" src="/the-skills-logo-black.svg" />
-        <div className="bg-white border-gray-200 rounded-sm sm:dark:border-gray-600 dark:bg-gray-900 md:border py-6 text-center mt-3">
-          If you need to cancel or reschedule, please email{" "}
-          <a href="mailto:questions@theskills.com" className="text-teal">
-            questions@theskills.com
-          </a>
-          .
-        </div>
-        {/* <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 my-4 transition-opacity sm:my-0" aria-hidden="true">
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
@@ -88,7 +120,8 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
                         </h3>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            {props.cancellationAllowed ? t("reschedule_instead") : t("event_is_in_the_past")}
+                            {/* {props.cancellationAllowed ? t("reschedule_instead") : t("event_is_in_the_past")} */}
+                            {t("reschedule_how_to")}
                           </p>
                         </div>
                         <div className="py-4 mt-4 border-t border-b">
@@ -106,49 +139,35 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
                     </div>
                     {props.cancellationAllowed && (
                       <div className="mt-5 space-x-2 text-center sm:mt-6">
-                        <Button
-                          color="secondary"
-                          data-testid="cancel"
-                          onClick={async () => {
-                            setLoading(true);
-
-                            const payload = {
-                              uid: uid,
-                            };
-
-                            telemetry.withJitsu((jitsu) =>
-                              jitsu.track(telemetryEventTypes.bookingCancelled, collectPageParameters())
-                            );
-
-                            const res = await fetch("/api/cancel", {
-                              body: JSON.stringify(payload),
-                              headers: {
-                                "Content-Type": "application/json",
-                              },
-                              method: "DELETE",
-                            });
-
-                            if (res.status >= 200 && res.status < 300) {
-                              await router.push(
-                                `/cancel/success?name=${props.profile.name}&title=${
-                                  props.booking.title
-                                }&eventPage=${props.profile.slug}&team=${
-                                  props.booking.eventType?.team ? 1 : 0
-                                }`
-                              );
-                            } else {
-                              setLoading(false);
-                              setError(
-                                `${t("error_with_status_code_occured", { status: res.status })} ${t(
-                                  "please_try_again"
-                                )}`
-                              );
-                            }
-                          }}
-                          loading={loading}>
-                          {t("cancel")}
-                        </Button>
-                        <Button onClick={() => router.push("/reschedule/" + uid)}>{t("reschedule")}</Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              color="warn"
+                              data-testid="cancel"
+                              onClick={async (e) => e.stopPropagation()}
+                              loading={loading}>
+                              {t("cancel")}
+                            </Button>
+                          </DialogTrigger>
+                          <ConfirmationDialogContent
+                            variety="danger"
+                            title={t("really_cancel_booking")}
+                            cancelBtnText={t("no")}
+                            confirmBtnText={t("yes")}
+                            onConfirm={handleCancellation}>
+                            {props.showRefundTerms ? (
+                              <>
+                                <span className="text-md font-bold mt-4 text-gray-900 block">
+                                  {t("refund_terms")}:{" "}
+                                </span>
+                                <span className="mt-2 block">{getRefundType(props.booking.startTime)}</span>
+                              </>
+                            ) : (
+                              <span className="mt-2 block">{t("will_notify_attendees")}</span>
+                            )}
+                          </ConfirmationDialogContent>
+                        </Dialog>
+                        {/* <Button onClick={() => router.push("/reschedule/" + uid)}>{t("reschedule")}</Button> */}
                       </div>
                     )}
                   </>
@@ -156,7 +175,7 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
       </main>
     </div>
   );
@@ -219,8 +238,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     props: {
       profile,
       booking: bookingObj,
-      cancellationAllowed:
-        (!!session?.user && session.user?.id === booking.user?.id) || booking.startTime >= new Date(),
+      cancellationAllowed: booking.startTime >= new Date(),
+      showRefundTerms: !session?.user,
       trpcState: ssr.dehydrate(),
     },
   };

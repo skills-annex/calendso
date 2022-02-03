@@ -177,6 +177,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // We skip the deletion of the event, because that would also delete the payment reference, which we should keep
     await apiDeletes;
+    await sendCancelledEmails(evt);
     return res.status(200).json({ message: "Booking successfully deleted." });
   }
 
