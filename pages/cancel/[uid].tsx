@@ -119,10 +119,12 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
                             : t("cannot_cancel_booking")}
                         </h3>
                         <div className="mt-2">
-                          <p className="text-sm text-gray-500">
-                            {/* {props.cancellationAllowed ? t("reschedule_instead") : t("event_is_in_the_past")} */}
-                            {t("reschedule_how_to")}
-                          </p>
+                          {!props.isInstructor && (
+                            <p className="text-sm text-gray-500">
+                              {/* {props.cancellationAllowed ? t("reschedule_instead") : t("event_is_in_the_past")} */}
+                              {t("reschedule_how_to")}
+                            </p>
+                          )}
                         </div>
                         <div className="py-4 mt-4 border-t border-b">
                           <h2 className="mb-2 text-lg font-medium text-gray-600 font-cal">
@@ -155,15 +157,15 @@ export default function Type(props: inferSSRProps<typeof getServerSideProps>) {
                             cancelBtnText={t("no")}
                             confirmBtnText={t("yes")}
                             onConfirm={handleCancellation}>
-                            {props.showRefundTerms ? (
+                            {props.isInstructor ? (
+                              <span className="mt-2 block">{t("will_notify_attendees")}</span>
+                            ) : (
                               <>
                                 <span className="text-md font-bold mt-4 text-gray-900 block">
                                   {t("refund_terms")}:{" "}
                                 </span>
                                 <span className="mt-2 block">{getRefundType(props.booking.startTime)}</span>
                               </>
-                            ) : (
-                              <span className="mt-2 block">{t("will_notify_attendees")}</span>
                             )}
                           </ConfirmationDialogContent>
                         </Dialog>
@@ -239,7 +241,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       profile,
       booking: bookingObj,
       cancellationAllowed: booking.startTime >= new Date(),
-      showRefundTerms: !session?.user,
+      isInstructor: !!session?.user,
       trpcState: ssr.dehydrate(),
     },
   };

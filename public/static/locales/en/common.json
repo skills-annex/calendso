@@ -240,7 +240,7 @@
   "really_cancel_booking": "Cancel your booking?",
   "cannot_cancel_booking": "You cannot cancel this booking",
   "reschedule_instead": "Instead, you could also reschedule it.",
-  "reschedule_how_to": "To reschedule, first cancel the booking and then book a new time on the instructors calendar.",
+  "reschedule_how_to": "To reschedule, first cancel the booking and then book a new time on the instructor's calendar.",
   "event_is_in_the_past": "The event is in the past",
   "error_with_status_code_occured": "An error with status code {{status}} occurred.",
   "booking_already_cancelled": "This booking was already cancelled",
