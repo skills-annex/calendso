@@ -2,8 +2,7 @@ import { BookingStatus } from "@prisma/client";
 import async from "async";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { refund } from "@ee/lib/stripe/server";
-
+// import { refund } from "@ee/lib/stripe/server";
 import { asStringOrNull } from "@lib/asStringOrNull";
 import { getSession } from "@lib/auth";
 import { sendCancelledEmails } from "@lib/emails/email-manager";
@@ -165,7 +164,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       uid: bookingToDelete.uid ?? "",
       language: t,
     };
-    await refund(bookingToDelete, evt);
+    // await refund(bookingToDelete, evt);
     await prisma.booking.update({
       where: {
         id: bookingToDelete.id,
