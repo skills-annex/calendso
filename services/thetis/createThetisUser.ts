@@ -6,22 +6,25 @@ export interface ICreateThetisUser {
   firstName?: string;
   lastName?: string;
   hasAllAccess?: boolean;
+  hasTemporaryPassword?: boolean;
 }
 
 const createThetisUser = async ({
   email,
   firstName,
   hasAllAccess = false,
+  hasTemporaryPassword = true,
   lastName,
   password,
 }: ICreateThetisUser) => {
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
+  const thetisApiKey = process.env.THETIS_API_KEY;
   if (!thetisSiteHost) {
     logger.error("Missing config value for THETIS_SITE_HOST");
     return;
   }
 
-  if (!process.env.THETIS_API_KEY) {
+  if (!thetisApiKey) {
     logger.error("Missing value for THETIS_API_KEY");
     return;
   }
@@ -33,10 +36,10 @@ const createThetisUser = async ({
   const result = await fetch(`${thetisSiteHost}/api/common/user/create-user`, {
     method: "POST",
     headers: {
-      "x-api-key": thetisSiteHost,
+      "x-api-key": thetisApiKey,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, firstName, lastName, hasAllAccess, password }),
+    body: JSON.stringify({ email, firstName, lastName, hasAllAccess, hasTemporaryPassword, password }),
   });
 
   return result.status;
