@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { createEvent, DateArray, Person } from "ics";
 import nodemailer from "nodemailer";
 
-import { getCancelLink, getRescheduleLink, getRichDescription } from "@lib/CalEventParser";
+import { getCancelLink, getRichDescription } from "@lib/CalEventParser";
 import { getErrorFromUnknown } from "@lib/errors";
 import { getIntegrationName } from "@lib/integrations";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
@@ -231,12 +231,12 @@ ${getRichDescription(this.calEvent)}
     return "";
   }
 
-  protected getRescheduleLink(): string {
+  protected getCancelLink(): string {
     const manageText = this.calEvent.language("manage_this_event");
 
     return `<p>${this.calEvent.language(
       "need_to_reschedule_or_cancel"
-    )}</p><p style="font-weight: 400; line-height: 24px;"><a href="${getRescheduleLink(
+    )}</p><p style="font-weight: 400; line-height: 24px;"><a href="${getCancelLink(
       this.calEvent
     )}" style="color: #3E3E3E;" alt="${manageText}">${manageText}</a></p>`;
   }

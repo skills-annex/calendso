@@ -97,7 +97,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
                         <tr>
                           <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                             <div style="font-family:Roboto, Helvetica, sans-serif;font-size:16px;font-weight:500;line-height:0px;text-align:left;color:#3E3E3E;">
-                              ${this.getRescheduleLink()}
+                              ${this.getCancelLink()}
                             </div>
                           </td>
                         </tr>
