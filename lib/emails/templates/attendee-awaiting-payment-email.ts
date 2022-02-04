@@ -121,9 +121,7 @@ ${this.getAdditionalNotes()}
                         <tr>
                           <td align="center" vertical-align="middle" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                             <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">
-                            <!-- ${this.getManageLink()}
-                              TODO: fix reschedule link -->
-                              <p>If you need to cancel or reschedule, please email <a href="mailto:questions@theskills.com">questions@theskills.com</a></p>
+                            ${this.getManageLink()}
                             </table>
                           </td>
                         </tr>

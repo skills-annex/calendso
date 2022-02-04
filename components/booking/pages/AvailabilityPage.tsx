@@ -101,7 +101,7 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
             "mx-auto my-0 md:my-24 transition-max-width ease-in-out duration-500 " +
             (selectedDate ? "max-w-5xl" : "max-w-3xl")
           }>
-          {isReady && !rescheduleUid && (
+          {isReady && (
             <div className="bg-white border-gray-200 rounded-sm sm:dark:border-gray-600 dark:bg-gray-900 md:border">
               {/* mobile: details */}
               <div className="block p-4 sm:p-8 md:hidden">
@@ -236,18 +236,6 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
                 )}
               </div>
             </div>
-          )}
-          {isReady && rescheduleUid && (
-            <>
-              <img className={"h-8 w-auto"} alt="Skills" title="Skills" src="/the-skills-logo-black.svg" />
-              <div className="bg-white border-gray-200 rounded-sm sm:dark:border-gray-600 dark:bg-gray-900 md:border py-6 text-center mt-3">
-                If you need to cancel or reschedule, please email{" "}
-                <a href="mailto:questions@theskills.com" className="text-teal">
-                  questions@theskills.com
-                </a>
-                .
-              </div>
-            </>
           )}
         </main>
       </div>

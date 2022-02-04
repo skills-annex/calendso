@@ -195,9 +195,7 @@ ${getRichDescription(this.calEvent)}
                         <tr>
                           <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                             <div style="font-family:Roboto, Helvetica, sans-serif;font-size:16px;font-weight:500;line-height:0px;text-align:left;color:#3E3E3E;">
-                            <!-- ${this.getManageLink()}
-                              TODO: fix reschedule link -->
-                              <p>If you need to cancel or reschedule, please email <a href="mailto:questions@theskills.com">questions@theskills.com</a></p>
+                              ${this.getManageLink()}
                             </div>
                           </td>
                         </tr>
