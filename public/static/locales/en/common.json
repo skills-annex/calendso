@@ -28,7 +28,7 @@
   "price": "Price",
   "paid": "Paid",
   "refunded": "Refunded",
-  "refund_terms": "Refund Terms",
+  "refund_terms": "Refund Terms for Purchaser",
   "refund_full": "We’ll issue a full refund to your credit card within 5 to 10 business days.",
   "refund_credit": "We’ll issue you a credit to use for a future booking. You will not receive a refund since the 1-on-1 start time is less than 24 hours from now.",
   "refund_refused": "You will not receive a refund since the 1-on-1 start time is less than 2 hours from now.",
