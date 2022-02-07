@@ -47,7 +47,7 @@ export default function Bookings() {
         <div className="flex flex-col -mx-4 sm:mx-auto">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-{/*               {statusError(query)} */}
+              {/*               {statusError(query)} */}
               {(query.status === "loading" || query.status === "idle") && <Loader />}
               {query.status === "success" && !isEmpty && (
                 <>

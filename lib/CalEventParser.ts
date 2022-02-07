@@ -85,10 +85,6 @@ export const getCancelLink = (calEvent: CalendarEvent): string => {
   return BASE_URL + "/cancel/" + getUid(calEvent);
 };
 
-export const getRescheduleLink = (calEvent: CalendarEvent): string => {
-  return BASE_URL + "/reschedule/" + getUid(calEvent);
-};
-
 export const getRichDescription = (calEvent: CalendarEvent, attendee?: Person) => {
   // Only the original attendee can make changes to the event
   // Guests cannot
@@ -111,6 +107,6 @@ ${getWho(calEvent)}
 ${calEvent.language("where")}:
 ${getLocation(calEvent)}
 ${getAdditionalNotes(calEvent)}
-<!--${getManageLink(calEvent)}-->
+${getManageLink(calEvent)}
   `.trim();
 };

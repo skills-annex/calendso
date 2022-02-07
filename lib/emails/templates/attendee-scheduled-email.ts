@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc";
 import { createEvent, DateArray, Person } from "ics";
 import nodemailer from "nodemailer";
 
-import { getCancelLink, getRescheduleLink, getRichDescription } from "@lib/CalEventParser";
+import { getCancelLink, getRichDescription } from "@lib/CalEventParser";
 import { getErrorFromUnknown } from "@lib/errors";
 import { getIntegrationName } from "@lib/integrations";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
@@ -195,9 +195,7 @@ ${getRichDescription(this.calEvent)}
                         <tr>
                           <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                             <div style="font-family:Roboto, Helvetica, sans-serif;font-size:16px;font-weight:500;line-height:0px;text-align:left;color:#3E3E3E;">
-                            <!-- ${this.getManageLink()}
-                              TODO: fix reschedule link -->
-                              <p>If you need to cancel or reschedule, please email <a href="mailto:questions@theskills.com">questions@theskills.com</a></p>
+                              ${this.getManageLink()}
                             </div>
                           </td>
                         </tr>
@@ -233,12 +231,12 @@ ${getRichDescription(this.calEvent)}
     return "";
   }
 
-  protected getRescheduleLink(): string {
+  protected getCancelLink(): string {
     const manageText = this.calEvent.language("manage_this_event");
 
     return `<p>${this.calEvent.language(
       "need_to_reschedule_or_cancel"
-    )}</p><p style="font-weight: 400; line-height: 24px;"><a href="${getRescheduleLink(
+    )}</p><p style="font-weight: 400; line-height: 24px;"><a href="${getCancelLink(
       this.calEvent
     )}" style="color: #3E3E3E;" alt="${manageText}">${manageText}</a></p>`;
   }

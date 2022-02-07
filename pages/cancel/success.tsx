@@ -50,7 +50,9 @@ export default function CancelSuccess() {
                 </div>
                 <div className="mt-5 text-center sm:mt-6">
                   <div className="mt-5">
-                    {!loading && !session?.user && <Button href={eventPage as string}>Pick another</Button>}
+                    {!loading && !session?.user && (
+                      <Button href={`/${eventPage as string}`}>Book another time</Button>
+                    )}
                     {!loading && session?.user && (
                       <Button data-testid="back-to-bookings" href="/bookings" EndIcon={ArrowRightIcon}>
                         {t("back_to_bookings")}
