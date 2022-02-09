@@ -1,6 +1,7 @@
-import { BanIcon, CheckIcon, XIcon } from "@heroicons/react/outline";
+import { BanIcon, CheckIcon, XIcon, MailIcon } from "@heroicons/react/outline";
 import { BookingStatus } from "@prisma/client";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { useMutation } from "react-query";
 
 import { HttpError } from "@lib/core/http/error";
@@ -14,6 +15,7 @@ type BookingItem = inferQueryOutput<"viewer.bookings">["bookings"][number];
 function BookingListItem(booking: BookingItem) {
   const { t, i18n } = useLocale();
   const utils = trpc.useContext();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const mutation = useMutation(
     async (confirm: boolean) => {
@@ -36,6 +38,34 @@ function BookingListItem(booking: BookingItem) {
   );
   const isUpcoming = new Date(booking.endTime) >= new Date();
   const isCancelled = booking.status === BookingStatus.CANCELLED;
+
+  const handleResendEmails = async (bookingUid: string) => {
+    if (confirm("Send event reminder email to all attendees?") == true) {
+      setIsProcessing(true);
+
+      const payload = {
+        uid: bookingUid,
+      };
+
+      const res = await fetch("/api/email/resend", {
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      setIsProcessing(false);
+
+      const json = await res.json();
+
+      if (res.status >= 200 && res.status < 300) {
+        alert(json?.message || "Success");
+      } else {
+        alert(json?.message || "Error: Email reminders failed to send.");
+      }
+    }
+  };
 
   const pendingActions: ActionType[] = [
     {
@@ -61,6 +91,13 @@ function BookingListItem(booking: BookingItem) {
       label: t("cancel"),
       href: `/cancel/${booking.uid}`,
       icon: XIcon,
+    },
+    {
+      id: "email_reminder",
+      label: t("email_reminder"),
+      onClick: () => handleResendEmails(booking.uid),
+      disabled: isProcessing,
+      icon: MailIcon,
     },
   ];
 
