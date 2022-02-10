@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: "Could not update event type for this user: missing price" });
     }
 
+    // ToDo: Do not update all prices
     const updatedEventTypes = await prisma.eventType.updateMany({
       where: {
         hidden: false,
