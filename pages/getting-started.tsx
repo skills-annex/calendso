@@ -18,6 +18,7 @@ import TimezoneSelect from "react-timezone-select";
 import { getSession } from "@lib/auth";
 import { DEFAULT_SCHEDULE } from "@lib/availability";
 import { useLocale } from "@lib/hooks/useLocale";
+import { getInstructor } from "@lib/integrations/Thetis/ThetisApiAdapter";
 import { getCalendarCredentials, getConnectedCalendars } from "@lib/integrations/calendar/CalendarManager";
 import getIntegrations from "@lib/integrations/getIntegrations";
 import prisma from "@lib/prisma";
@@ -52,6 +53,7 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
       title: t("30min_meeting"),
       slug: "30min",
       length: 30,
+      price: 0,
       locations: [{ type: "integrations:daily" }],
       disableGuests: true,
     },
@@ -200,6 +202,23 @@ export default function Onboarding(props: inferSSRProps<typeof getServerSideProp
     if (!props.eventTypes || props.eventTypes.length === 0) {
       const eventTypes = await getEventTypes();
       if (eventTypes.length === 0) {
+        const product1on1 = props.instructor.data?.products?.find((p) => p.name === "1-on-1");
+
+        if (product1on1?.introductoryPrice) {
+          DEFAULT_EVENT_TYPES.push({
+            title: t("15min_intro_meeting"),
+            slug: `intro-${props.instructor.data?.handle}`,
+            length: 15,
+            price: product1on1?.introductoryPrice,
+            locations: [{ type: "integrations:daily" }],
+            disableGuests: true,
+          });
+        }
+
+        if (product1on1?.price) {
+          DEFAULT_EVENT_TYPES[0].price = product1on1?.price;
+        }
+
         Promise.all(
           DEFAULT_EVENT_TYPES.map(async (event) => {
             return await createEventType(event);
@@ -516,6 +535,7 @@ export async function getServerSideProps(context: NextPageContext) {
     },
     select: {
       id: true,
+      thetisId: true,
       startTime: true,
       endTime: true,
       username: true,
@@ -589,10 +609,13 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   });
 
+  const instructor = await getInstructor(user.thetisId);
+
   return {
     props: {
       session,
       user,
+      instructor,
       integrations,
       connectedCalendars,
       eventTypes,

@@ -8,6 +8,7 @@ export interface ThetisInstructorDataResponse {
       {
         name: string;
         price: number;
+        introductoryPrice: number;
       }
     ];
     handle?: string;
@@ -17,7 +18,11 @@ export interface ThetisInstructorDataResponse {
   };
 }
 
-async function getInstructor(id: string): Promise<ThetisInstructorDataResponse> {
+async function getInstructor(id?: string | null): Promise<ThetisInstructorDataResponse> {
+  if (!id) {
+    throw new Error("Missing instructor id");
+  }
+
   if (!process.env.THETIS_SITE_HOST) {
     throw new Error("Missing config value for THETIS_SITE_HOST");
   }
