@@ -20,9 +20,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
       to: `${this.attendee.name} <${this.attendee.email}>`,
       from: `info@theskills.com <${this.getMailerOptions().from}>`,
       replyTo: "questions@theskills.com",
-      subject: `Event Reminder: ${this.calEvent.type} ${this.getInviteeStart().format(
-        "h:mma"
-      )} - ${this.getInviteeEnd().format("h:mma")}`,
+      subject: `Event Reminder: ${this.calEvent.type}`,
       html: this.getHtmlBody(),
       text: this.getTextBody(),
     };
@@ -38,9 +36,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
   }
 
   protected getHtmlBody(): string {
-    const headerContent = `Event Reminder: ${this.calEvent.type} ${this.getInviteeStart().format(
-      "h:mma"
-    )} - ${this.getInviteeEnd().format("h:mma")}`;
+    const headerContent = `Event Reminder: ${this.calEvent.type}`;
 
     return `
     <!doctype html>
