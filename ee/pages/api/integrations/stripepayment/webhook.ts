@@ -26,6 +26,16 @@ export const config = {
 
 async function handlePaymentSuccess(event: Stripe.Event) {
   const paymentIntent = event.data.object as Stripe.PaymentIntent;
+  const isExistingPayment = await prisma.payment.findUnique({
+    where: { externalId: paymentIntent.id },
+    select: { externalId: true },
+  });
+  if (!isExistingPayment) {
+    throw new HttpCode({
+      statusCode: 202,
+      message: `Stripe Webhook event received for payment not made in Vulcan.`,
+    });
+  }
   const payment = await prisma.payment.update({
     where: {
       externalId: paymentIntent.id,
