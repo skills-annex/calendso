@@ -1,5 +1,9 @@
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { buffer } from "micro";
 import type { NextApiRequest, NextApiResponse } from "next";
+import updateContact from "services/hubspot";
 import Stripe from "stripe";
 
 import stripe from "@ee/lib/stripe/server";
@@ -16,6 +20,10 @@ import { Ensure } from "@lib/types/utils";
 
 import { getTranslation } from "@server/lib/i18n";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("America/Los_Angeles"); // hubspot is set to use pacific time
+
 const log = logger.getChildLogger({ prefix: ["[api] book:user"] });
 
 export const config = {
@@ -26,16 +34,63 @@ export const config = {
 
 async function handlePaymentSuccess(event: Stripe.Event) {
   const paymentIntent = event.data.object as Stripe.PaymentIntent;
-  const isExistingPayment = await prisma.payment.findUnique({
+  const existingPaymentData = await prisma.payment.findUnique({
     where: { externalId: paymentIntent.id },
-    select: { externalId: true },
+    select: {
+      externalId: true,
+      booking: {
+        select: {
+          user: { select: { thetisId: true, username: true } },
+          startTime: true,
+          eventType: { select: { slug: true } },
+          attendees: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
   });
-  if (!isExistingPayment) {
+  if (!existingPaymentData) {
     throw new HttpCode({
       statusCode: 202,
       message: `Stripe Webhook event received for payment not made in Vulcan.`,
     });
   }
+
+  if (existingPaymentData.booking?.user?.thetisId) {
+    const eventUrl = `${process.env.BASE_URL}/${existingPaymentData.booking?.user?.username}/${existingPaymentData.booking?.eventType?.slug}`;
+    const instructorData = await fetch(
+      `${process.env.THETIS_SITE_HOST}/api/instructors/${existingPaymentData.booking.user.thetisId}`
+    );
+    const instructor = await instructorData.json();
+    const endUser = existingPaymentData.booking.attendees[0];
+    const userEmail = endUser.email; // hardcoded to only support 1 attendee, which is probably fine as there can only be one payment and that's our current model
+    const nameOfUser = endUser.name.split(" ");
+    const firstNameOfUser = nameOfUser?.slice(0, 1)[0] || "";
+    const otherNamesOfUser = nameOfUser?.slice(1).join(" ") || "";
+
+    if (userEmail) {
+      const updatedResponse = await updateContact({
+        data: {
+          n1on1_next_scheduled_at: dayjs(existingPaymentData.booking.startTime)
+            .utcOffset(0)
+            .startOf("date")
+            .valueOf()
+            .toString(),
+          n1on1_instructor_last_purchased_calendar_url: eventUrl,
+          n1on1_instructor_last_purchased_image_url: instructor.imageUrl,
+          firstName: firstNameOfUser,
+          lastName: otherNamesOfUser,
+        },
+        email: userEmail,
+      });
+      log.info("hubspot contact updated", updatedResponse);
+    }
+  }
+
   const payment = await prisma.payment.update({
     where: {
       externalId: paymentIntent.id,
