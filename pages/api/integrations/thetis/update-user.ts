@@ -3,6 +3,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import logger from "@lib/logger";
 import prisma from "@lib/prisma";
 
+interface IThetisUser {
+  id: string;
+  isActive: boolean;
+  price: number;
+  introductoryPrice: number;
+  instructorPublicName: string;
+  instructorHandle: string;
+  instructorImage: string;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     // Check that requested is authenticated
@@ -19,14 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       introductoryPrice,
       instructorPublicName,
       instructorHandle,
-    }: {
-      id: string;
-      isActive: boolean;
-      price: number;
-      introductoryPrice: number;
-      instructorPublicName: string;
-      instructorHandle: string;
-    } = req.body;
+      instructorImage,
+    }: IThetisUser = req.body;
 
     if (!id) {
       logger.error("Could not update event type for this user: missing id");
@@ -170,6 +174,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         name: instructorPublicName,
         username: instructorHandle,
+        avatar: instructorImage,
       },
       select: {
         id: true,

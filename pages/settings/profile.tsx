@@ -286,6 +286,7 @@ function SettingsView(props: ComponentProps<typeof Settings> & { localeProp: str
                 />
                 <div className="flex items-center px-5">
                   <ImageUploader
+                    disabled={true}
                     target="avatar"
                     id="avatar-upload"
                     buttonMsg={t("change_avatar")}

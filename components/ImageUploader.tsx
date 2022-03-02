@@ -15,6 +15,7 @@ type ImageUploaderProps = {
   handleAvatarChange: (imageSrc: string) => void;
   imageSrc?: string;
   target: string;
+  disabled?: boolean;
 };
 
 interface FileEvent<T = Element> extends FormEvent<T> {
@@ -67,6 +68,7 @@ export default function ImageUploader({
   id,
   buttonMsg,
   handleAvatarChange,
+  disabled,
   ...props
 }: ImageUploaderProps) {
   const { t } = useLocale();
@@ -111,7 +113,11 @@ export default function ImageUploader({
       }>
       <DialogTrigger asChild>
         <div className="flex items-center">
-          <Button color="secondary" type="button" className="py-1 text-xs">
+          <Button
+            color="secondary"
+            type="button"
+            className="py-1 text-xs"
+            {...(disabled && { disabled: true })}>
             {buttonMsg}
           </Button>
         </div>
