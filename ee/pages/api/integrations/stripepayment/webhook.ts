@@ -61,7 +61,7 @@ async function handlePaymentSuccess(event: Stripe.Event) {
   }
 
   if (existingPaymentData.booking?.user?.thetisId) {
-    const eventUrl = `${process.env.BASE_URL}/${existingPaymentData.booking?.user?.username}/${existingPaymentData.booking?.eventType?.slug}`;
+    const eventUrl = `${process.env.BASE_URL}/${existingPaymentData.booking?.user?.username}/30min`;
     const instructorData = await fetch(
       `${process.env.THETIS_SITE_HOST}/api/instructors/${existingPaymentData.booking.user.thetisId}`
     );
