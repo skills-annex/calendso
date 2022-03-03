@@ -70,14 +70,14 @@ export const ALL_INTEGRATIONS = [
     description: "For personal and business calendars",
     variant: "calendar",
   }, */
-  {
+  /*   {
     installed: true,
     type: "apple_calendar",
     title: "Apple Calendar",
     imageSrc: "integrations/apple-calendar.svg",
     description: "For personal and business calendars",
     variant: "calendar",
-  },
+  }, */
   {
     installed: !!(
       process.env.STRIPE_CLIENT_ID &&
