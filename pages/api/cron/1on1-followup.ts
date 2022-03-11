@@ -50,8 +50,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const participantSeconds = participants
       .map(({ duration }) => duration)
       .reduce((prev, curr) => prev + curr, 0);
+    const totalVideoParticipantsExpected = attendees?.length || 1 + 1; // attendees leaves out the host
     const likelySuccessfulMeeting =
-      eventType && !ongoing && participantSeconds > (eventType.length * 60) / (attendees?.length || 1 + 1);
+      eventType &&
+      !ongoing &&
+      participantSeconds > (eventType.length * 60 * totalVideoParticipantsExpected) / 2; // if video time is more than 50% of expected total time
 
     if (likelySuccessfulMeeting && attendees) {
       await Promise.all(
