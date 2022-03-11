@@ -15,9 +15,8 @@ jobs:
     steps:
       - name: cURL request
         if: ${{ env.NEXT_PUBLIC_APP_URL && env.CRON_API_KEY }}
-        # hardcoded to staging, update to prod before merging
         run: |
-          curl https://v3.theskills.com/api/cron/1on1-followup \
+          curl ${{ secrets.NEXT_PUBLIC_APP_URL }}/api/cron/1on1-followup \
             -X POST \
             -H 'content-type: application/json' \
             -H 'authorization: ${{ secrets.CRON_API_KEY }}' \
