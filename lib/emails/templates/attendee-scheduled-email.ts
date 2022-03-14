@@ -323,11 +323,11 @@ ${getRichDescription(this.calEvent)}
       providerName = location[0].toUpperCase() + location.slice(1);
     }
 
-    if (this.calEvent.references && this.calEvent.references[0]) {
-      const { meetingId, meetingPassword, meetingUrl: baseMeetingUrl } = this.calEvent.references[0];
+    if (this.calEvent.videoCallData) {
+      const { id: meetingId, password: meetingPassword, url } = this.calEvent.videoCallData;
       const isAttendeeInstructor = this.attendee.email === this.calEvent.organizer.email;
-      const meetingUrl = isAttendeeInstructor ? `${baseMeetingUrl}?record=1` : baseMeetingUrl;
-
+      const meetingUrl = isAttendeeInstructor ? `${url}?record=1` : url;
+      console.log("meetingUrl: ", { meetingUrl });
       return `
       <p style="height: 6px"></p>
       <div style="line-height: 6px;">
