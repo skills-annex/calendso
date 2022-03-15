@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const reminderIntervalMinutes = [24 * 60, 30];
+  const reminderIntervalMinutes = [24 * 60, 120];
   let notificationsSent = 0;
 
   for (const interval of reminderIntervalMinutes) {
