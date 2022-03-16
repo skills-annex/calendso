@@ -14,6 +14,7 @@ import { PaymentPageProps } from "@ee/pages/payment/[uid]";
 
 import { useLocale } from "@lib/hooks/useLocale";
 import useTheme from "@lib/hooks/useTheme";
+import { LocationType } from "@lib/location";
 
 dayjs.extend(utc);
 dayjs.extend(toArray);
@@ -42,6 +43,14 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
   }, []);
 
   const eventName = props.booking.title;
+  // TODO: Move to translations
+  const locationLabels = {
+    [LocationType.InPerson]: t("in_person_meeting"),
+    [LocationType.Phone]: t("phone_call"),
+    [LocationType.GoogleMeet]: "Google Meet",
+    [LocationType.Zoom]: "Zoom Video",
+    [LocationType.Daily]: "Daily.co Video",
+  };
 
   return isReady ? (
     <div className="h-screen bg-neutral-50 dark:bg-neutral-900">
@@ -93,7 +102,9 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                       {props.booking.location && (
                         <>
                           <div className="font-medium">{t("where")}</div>
-                          <div className="col-span-2 mb-6">{props.booking.location}</div>
+                          <div className="col-span-2 mb-6">
+                            {locationLabels[props.booking.location as LocationType]}
+                          </div>
                         </>
                       )}
                       <div className="font-medium">{t("price")}</div>
