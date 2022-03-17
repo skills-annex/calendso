@@ -316,6 +316,10 @@ ${getRichDescription(this.calEvent)}
   }
 
   protected getLocation(): string {
+    const isAttendeeInstructor = this.attendee.email === this.calEvent.organizer.email;
+    let meetingId;
+    let meetingPassword;
+    let meetingUrl;
     let providerName = this.calEvent.location ? getIntegrationName(this.calEvent.location) : "";
 
     if (this.calEvent.location && this.calEvent.location.includes("integrations:")) {
@@ -323,11 +327,21 @@ ${getRichDescription(this.calEvent)}
       providerName = location[0].toUpperCase() + location.slice(1);
     }
 
-    if (this.calEvent.videoCallData) {
-      const { id: meetingId, password: meetingPassword, url } = this.calEvent.videoCallData;
-      const isAttendeeInstructor = this.attendee.email === this.calEvent.organizer.email;
-      const meetingUrl = isAttendeeInstructor ? `${url}?record=1` : url;
+    if (this.calEvent.references && this.calEvent.references[0]) {
+      const { meetingUrl: baseMeetingUrl } = this.calEvent.references[0];
+      meetingId = this.calEvent.references[0].meetingId;
+      meetingPassword = this.calEvent.references[0].meetingPassword;
+      meetingUrl = isAttendeeInstructor ? `${baseMeetingUrl}?record=1` : baseMeetingUrl;
+    }
 
+    if (this.calEvent.videoCallData) {
+      const { url: baseMeetingUrl } = this.calEvent.videoCallData;
+      meetingId = this.calEvent.videoCallData.id;
+      meetingPassword = this.calEvent.videoCallData.password;
+      meetingUrl = isAttendeeInstructor ? `${baseMeetingUrl}?record=1` : baseMeetingUrl;
+    }
+
+    if (meetingUrl) {
       return `
       <p style="height: 6px"></p>
       <div style="line-height: 6px;">
