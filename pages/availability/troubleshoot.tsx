@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { QueryCell } from "@lib/QueryCell";
 import { useLocale } from "@lib/hooks/useLocale";
+import { TWELVE_HOUR_TIME_FORMAT } from "@lib/integrations/calendar/constants/formats";
 import { inferQueryOutput, trpc } from "@lib/trpc";
 
 import Loader from "@components/Loader";
@@ -16,12 +17,12 @@ type User = inferQueryOutput<"viewer.me">;
 const AvailabilityView = ({ user }: { user: User }) => {
   const { t } = useLocale();
   const [loading, setLoading] = useState(true);
-  const [availability, setAvailability] = useState([]);
+  const [availability, setAvailability] = useState([] as { start: string; end: string }[]);
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   function convertMinsToHrsMins(mins: number) {
-    let h = Math.floor(mins / 60);
-    let m = mins % 60;
+    let h: string | number = Math.floor(mins / 60);
+    let m: string | number = mins % 60;
     h = h < 10 ? "0" + h : h;
     m = m < 10 ? "0" + m : m;
     return `${h}:${m}`;
@@ -77,11 +78,11 @@ const AvailabilityView = ({ user }: { user: User }) => {
                 <div className="px-4 py-5 text-black sm:p-6">
                   {t("calendar_shows_busy_between")}{" "}
                   <span className="font-medium text-neutral-800" title={slot.start}>
-                    {dayjs(slot.start).format("HH:mm")}
+                    {dayjs(slot.start).format(TWELVE_HOUR_TIME_FORMAT)}
                   </span>{" "}
                   {t("and")}{" "}
                   <span className="font-medium text-neutral-800" title={slot.end}>
-                    {dayjs(slot.end).format("HH:mm")}
+                    {dayjs(slot.end).format(TWELVE_HOUR_TIME_FORMAT)}
                   </span>{" "}
                   {t("on")} {dayjs(slot.start).format("D")}{" "}
                   {t(dayjs(slot.start).format("MMMM").toLowerCase())} {dayjs(slot.start).format("YYYY")}

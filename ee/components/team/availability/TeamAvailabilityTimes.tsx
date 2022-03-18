@@ -4,6 +4,7 @@ import utc from "dayjs/plugin/utc";
 import React from "react";
 import { ITimezone } from "react-timezone-select";
 
+import { TWELVE_HOUR_TIME_FORMAT } from "@lib/integrations/calendar/constants/formats";
 import getSlots from "@lib/slots";
 import { trpc } from "@lib/trpc";
 
@@ -61,7 +62,7 @@ export default function TeamAvailabilityTimes(props: Props) {
           <a
             className="flex-grow block py-2 mb-2 mr-3 font-medium text-center bg-white border rounded-sm min-w-48 dark:bg-gray-600 text-primary-500 dark:text-neutral-200 border-brand dark:border-transparent hover:bg-brand hover:text-brandcontrast dark:hover:border-black dark:hover:text-white dark:hover:bg-black"
             data-testid="time">
-            {time.format("HH:mm")}
+            {time.format(TWELVE_HOUR_TIME_FORMAT)}
           </a>
         </div>
       ))}

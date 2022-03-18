@@ -8,6 +8,7 @@ import { Controller, useFieldArray } from "react-hook-form";
 import { defaultDayRange } from "@lib/availability";
 import { weekdayNames } from "@lib/core/i18n/weekday";
 import { useLocale } from "@lib/hooks/useLocale";
+import { TWELVE_HOUR_TIME_FORMAT } from "@lib/integrations/calendar/constants/formats";
 import { TimeRange } from "@lib/types/schedule";
 
 import Button from "@components/ui/Button";
@@ -51,7 +52,7 @@ const TimeRangeField = ({ name }: TimeRangeFieldProps) => {
   // const { i18n } = useLocale();
   const getOption = (time: ConfigType) => ({
     value: dayjs(time).toDate().valueOf(),
-    label: dayjs(time).utc().format("HH:mm"),
+    label: dayjs(time).utc().format(TWELVE_HOUR_TIME_FORMAT),
     // .toLocaleTimeString(i18n.language, { minute: "numeric", hour: "numeric" }),
   });
 
@@ -68,7 +69,7 @@ const TimeRangeField = ({ name }: TimeRangeFieldProps) => {
         name={`${name}.start`}
         render={({ field: { onChange, value } }) => (
           <Select
-            className="w-[6rem]"
+            className="w-[7.5rem]"
             options={options}
             onFocus={() => setOptions(timeOptions())}
             onBlur={() => setOptions([])}
@@ -82,7 +83,7 @@ const TimeRangeField = ({ name }: TimeRangeFieldProps) => {
         name={`${name}.end`}
         render={({ field: { onChange, value } }) => (
           <Select
-            className="w-[6rem]"
+            className="w-[7.5rem]"
             options={options}
             onFocus={() => setOptions(timeOptions())}
             onBlur={() => setOptions([])}
