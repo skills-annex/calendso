@@ -6,11 +6,27 @@ import { useMutation } from "react-query";
 
 import { HttpError } from "@lib/core/http/error";
 import { useLocale } from "@lib/hooks/useLocale";
+import {
+  TWELVE_HOUR_TIME_FORMAT,
+  TWELVE_HOUR_TIME_FORMAT_2,
+} from "@lib/integrations/calendar/constants/formats";
 import { inferQueryOutput, trpc } from "@lib/trpc";
 
 import TableActions, { ActionType } from "@components/ui/TableActions";
 
 type BookingItem = inferQueryOutput<"viewer.bookings">["bookings"][number];
+
+const formatTimeRange = (startTime: string, endTime: string) => {
+  const end = dayjs(endTime);
+  const start = dayjs(startTime);
+  const isSameTimeOfDay = start.format("a") === end.format("a");
+
+  if (isSameTimeOfDay) {
+    return `${start.format(TWELVE_HOUR_TIME_FORMAT_2)} - ${end.format(TWELVE_HOUR_TIME_FORMAT)}`;
+  } else {
+    return `${start.format(TWELVE_HOUR_TIME_FORMAT)} - ${end.format(TWELVE_HOUR_TIME_FORMAT)}`;
+  }
+};
 
 function BookingListItem(booking: BookingItem) {
   const { t, i18n } = useLocale();
@@ -102,24 +118,20 @@ function BookingListItem(booking: BookingItem) {
   ];
 
   const startTime = dayjs(booking.startTime).format(isUpcoming ? "ddd, D MMM" : "D MMMM YYYY");
+  const timeRange = formatTimeRange(booking.startTime, booking.endTime);
 
   return (
     <tr className="flex">
       <td className="hidden py-4 pl-6 align-top sm:table-cell whitespace-nowrap">
         <div className="text-sm leading-6 text-gray-900">{startTime}</div>
-        <div className="text-sm text-gray-500">
-          {dayjs(booking.startTime).format("HH:mm")} - {dayjs(booking.endTime).format("HH:mm")}
-        </div>
+        <div className="text-sm text-gray-500">{timeRange}</div>
       </td>
       <td className={"pl-4 py-4 flex-1" + (booking.rejected ? " line-through" : "")}>
         <div className="sm:hidden">
           {!booking.confirmed && !booking.rejected && <Tag className="mb-2 mr-2">{t("unconfirmed")}</Tag>}
           {!!booking?.eventType?.price && !booking.paid && <Tag className="mb-2 mr-2">Pending payment</Tag>}
           <div className="text-sm font-medium text-gray-900">
-            {startTime}:{" "}
-            <small className="text-sm text-gray-500">
-              {dayjs(booking.startTime).format("HH:mm")} - {dayjs(booking.endTime).format("HH:mm")}
-            </small>
+            {startTime}: <small className="text-sm text-gray-500">{timeRange}</small>
           </div>
         </div>
         <div
