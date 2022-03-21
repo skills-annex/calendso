@@ -33,7 +33,7 @@ const createThetisUser = async ({
     logger.error("Missing email to create Thetis user");
     return;
   }
-  const result = await fetch(`${thetisSiteHost}/api/common/user/create-user`, {
+  const result = await fetch(`${thetisSiteHost}/api/users`, {
     method: "POST",
     headers: {
       "x-api-key": thetisApiKey,
