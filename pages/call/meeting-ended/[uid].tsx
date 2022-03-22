@@ -29,7 +29,7 @@ export default function MeetingUnavailable(props: inferSSRProps<typeof getServer
   if (!emptyBooking) {
     return (
       <div>
-        <HeadSeo title={`Meeting Unavaialble`} description={`Meeting Unavailable`} />
+        <HeadSeo title={`Meeting Unavailable`} description={`Meeting Unavailable`} />
         <main className="max-w-3xl mx-auto my-24">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
