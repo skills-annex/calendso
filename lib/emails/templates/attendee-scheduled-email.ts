@@ -36,7 +36,7 @@ export default class AttendeeScheduledEmail {
   }
 
   public sendEmail() {
-    new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) =>
       nodemailer
         .createTransport(this.getMailerOptions().transport)
         .sendMail(this.getNodeMailerPayload(), (_err, info) => {
@@ -48,8 +48,9 @@ export default class AttendeeScheduledEmail {
             resolve(info);
           }
         })
-    ).catch((e) => console.error("sendEmail", e));
-    return new Promise((resolve) => resolve("send mail async"));
+    )
+      .then((e) => e)
+      .catch((e) => console.error("sendEmail", e));
   }
 
   protected getiCalEventAsString(): string | undefined {
