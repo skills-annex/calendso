@@ -145,23 +145,19 @@ export const sendOrganizerRequestReminderEmail = async (calEvent: CalendarEvent)
   });
 };
 
-export const sendEventReminderEmail = async (calEvent: CalendarEvent, eventAttendees: Person[]) => {
-  const emailsToSend = [];
+export const sendEventReminderEmails = (calEvent: CalendarEvent, eventAttendees: Person[]) => {
+  const emailsToSend = eventAttendees.map((attendee) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const eventReminderEmail = new EventReminderEmail(calEvent, attendee);
+        resolve(eventReminderEmail.sendEmail());
+      } catch (e) {
+        reject(console.error("EventReminderEmail.sendEmail failed", e));
+      }
+    });
+  });
 
-  emailsToSend.push(
-    eventAttendees.map((attendee) => {
-      return new Promise((resolve, reject) => {
-        try {
-          const eventReminderEmail = new EventReminderEmail(calEvent, attendee);
-          resolve(eventReminderEmail.sendEmail());
-        } catch (e) {
-          reject(console.error("EventReminderEmail.sendEmail failed", e));
-        }
-      });
-    })
-  );
-
-  await Promise.all(emailsToSend);
+  return Promise.all(emailsToSend).then((e) => e);
 };
 
 export const sendAwaitingPaymentEmail = async (calEvent: CalendarEvent) => {

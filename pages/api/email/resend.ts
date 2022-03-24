@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getSession } from "@lib/auth";
-import { sendEventReminderEmail } from "@lib/emails/email-manager";
+import { sendEventReminderEmails } from "@lib/emails/email-manager";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
 import prisma from "@lib/prisma";
 
@@ -89,7 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
 
       const eventAttendees = [{ name, email: user.email, timeZone: user.timeZone }, ...attendees];
-      await sendEventReminderEmail(evt, eventAttendees);
+      await sendEventReminderEmails(evt, eventAttendees);
     }
     res.status(200).json({ message: "Success: Event reminder email sent to all attendees." });
   } else {

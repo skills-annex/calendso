@@ -2,7 +2,7 @@ import { ReminderType } from "@prisma/client";
 import dayjs from "dayjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { sendEventReminderEmail } from "@lib/emails/email-manager";
+import { sendEventReminderEmails } from "@lib/emails/email-manager";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
 import prisma from "@lib/prisma";
 
@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const reminderIntervalMinutes = [24 * 60, 120];
   let notificationsSent = 0;
+  let responses: unknown[] = [];
 
   for (const interval of reminderIntervalMinutes) {
     const bookings = await prisma.booking.findMany({
@@ -106,8 +107,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
 
         const eventAttendees = [{ name, email: user.email, timeZone: user.timeZone }, ...attendees];
-
-        await sendEventReminderEmail(evt, eventAttendees);
+        const eventReminderEmailsResponses = await sendEventReminderEmails(evt, eventAttendees);
+        responses = [...responses, ...eventReminderEmailsResponses];
 
         await prisma.reminderMail.create({
           data: {
@@ -120,5 +121,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
   }
-  res.status(200).json({ notificationsSent });
+  res.status(200).json({ notificationsSent, responses });
 }
