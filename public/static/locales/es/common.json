@@ -1,4 +1,5 @@
 {
+  "intro_already_booked": "You have already booked an introductory meeting with this instructor. Please continue your booking with {{instructorName}} <a class='font-bold underline' href='/{{slug}}'>here</a>.",
   "accept_invitation": "Aceptar invitación",
   "calcom_explained": "Cal.com es la alternativa de código abierto de Calendly poniéndole en control de sus propios datos, flujo de trabajo y apariencia.",
   "have_any_questions": "¿Tienes preguntas? Estamos aquí para ayudar.",

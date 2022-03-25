@@ -1,4 +1,5 @@
 {
+  "intro_already_booked": "You have already booked an introductory meeting with this instructor. Please continue your booking with {{instructorName}} <a class='font-bold underline' href='/{{slug}}'>here</a>.",
   "trial_days_left": "Sie haben noch $t(Tage, {\"count\": {{days}} }) im Testzeitraum der PRO-Version",
   "day": "{{count}} Tag",
   "day_plural": "{{count}} Tage",
