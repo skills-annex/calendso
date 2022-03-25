@@ -45,6 +45,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         email: true,
         booking: {
           select: {
+            status: true,
             title: true,
             payment: {
               select: {

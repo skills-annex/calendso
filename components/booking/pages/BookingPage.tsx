@@ -213,10 +213,9 @@ const BookingPage = (props: BookingPageProps) => {
 
     if (isValidEmail && eventTypeId) {
       const introBookings = await fetch(
-        `/api/bookings/intro-booking-by-attendee
-          ?email=${encodeURIComponent(email)}
-          &eventTypeId=${eventTypeId}
-        `,
+        `/api/bookings/intro-booking-by-attendee?email=${encodeURIComponent(
+          email
+        )}&eventTypeId=${eventTypeId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -290,7 +289,7 @@ const BookingPage = (props: BookingPageProps) => {
     });
   };
 
-  const errorBlock = (message: string) => (
+  const ErrorBlock = ({ message }: { message: string }) => (
     <div className="p-4 mt-2 border-l-4 border-yellow-400 bg-yellow-50">
       <div className="flex">
         <div className="flex-shrink-0">
@@ -590,14 +589,17 @@ const BookingPage = (props: BookingPageProps) => {
                     </Button>
                   </div>
                 </Form>
-                {mutation.isError && errorBlock(rescheduleUid ? t("reschedule_fail") : t("booking_fail"))}
-                {hasBookedIntro &&
-                  errorBlock(
-                    t("intro_already_booked", {
+                {mutation.isError && (
+                  <ErrorBlock message={rescheduleUid ? t("reschedule_fail") : t("booking_fail")} />
+                )}
+                {hasBookedIntro && (
+                  <ErrorBlock
+                    message={t("intro_already_booked", {
                       instructorName: props.profile.name,
                       slug: props.profile.slug,
-                    })
-                  )}
+                    })}
+                  />
+                )}
               </div>
             </div>
           </div>
