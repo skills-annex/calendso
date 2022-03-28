@@ -206,12 +206,10 @@ const BookingPage = (props: BookingPageProps) => {
     }
   };
 
-  const handleEmailInputOnBlur = async (e: FocusEvent<HTMLInputElement, Element>) => {
-    const email = e?.target?.value;
-    const isValidEmail = email.match(/^\S+@\S+$/);
-    const eventTypeId = props?.eventType?.id;
+  const checkHasBookedIntro = async (email: string | undefined, eventTypeId: number | undefined) => {
+    const isValidEmail = email?.match(/^\S+@\S+$/);
 
-    if (isValidEmail && eventTypeId) {
+    if (email && isValidEmail && eventTypeId) {
       const introBookings = await fetch(
         `/api/bookings/intro-booking-by-attendee?email=${encodeURIComponent(
           email
@@ -224,12 +222,18 @@ const BookingPage = (props: BookingPageProps) => {
         }
       );
       const introBooking = await introBookings.json();
+      return introBooking.length > 0;
+    } else {
+      return false;
+    }
+  };
 
-      if (introBooking.length > 0) {
-        setHasBookedIntro(true);
-      } else {
-        setHasBookedIntro(false);
-      }
+  const handleEmailInputOnBlur = async (e: FocusEvent<HTMLInputElement, Element>) => {
+    const bookedIntro = await checkHasBookedIntro(e?.target?.value, props?.eventType?.id);
+    if (bookedIntro) {
+      setHasBookedIntro(true);
+    } else {
+      setHasBookedIntro(false);
     }
   };
 
@@ -374,7 +378,20 @@ const BookingPage = (props: BookingPageProps) => {
                 <p className="mb-8 text-gray-600 dark:text-white">{props.eventType.description}</p>
               </div>
               <div className="sm:w-1/2 sm:pl-8 sm:pr-4">
-                <Form form={bookingForm} handleSubmit={bookEvent}>
+                <Form
+                  form={bookingForm}
+                  handleSubmit={async (booking, e) => {
+                    e?.preventDefault();
+
+                    const bookedIntro = await checkHasBookedIntro(booking?.email, props?.eventType?.id);
+                    if (bookedIntro) {
+                      setHasBookedIntro(true);
+                    } else {
+                      setHasBookedIntro(false);
+                      bookEvent(booking);
+                      return true;
+                    }
+                  }}>
                   <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-white">
                       {t("your_name")}
