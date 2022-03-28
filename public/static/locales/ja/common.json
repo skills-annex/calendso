@@ -1,5 +1,4 @@
 {
-  "intro_already_booked": "You have already booked an introductory meeting with this instructor. Please continue your booking with {{instructorName}} <a class='font-bold underline' href='/{{slug}}'>here</a>.",
   "accept_our_license": ".env 変数 <1>NEXT_PUBLIC_LICENSE_CONSENT</1> を '{{agree}} ' に変更することで、ライセンスを承認します。",
   "remove_banner_instructions": "このバナーを削除するには、.envファイルを開き、<1>NEXT_PUBLIC_LICENSE_CONSENT</1>変数を「{{agree}}」に変更してください",
   "error_message": "エラーメッセージ： '{{errorMessage}}'",
