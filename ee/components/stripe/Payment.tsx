@@ -5,6 +5,7 @@ import { stringify } from "querystring";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 
 import { PaymentData } from "@ee/lib/stripe/server";
+import { PaymentPageProps } from "@ee/pages/payment/[uid]";
 
 // import useDarkMode from "@lib/core/browser/useDarkMode";
 import { useLocale } from "@lib/hooks/useLocale";
@@ -31,6 +32,7 @@ const CARD_OPTIONS: stripejs.StripeCardElementOptions = {
 } as const;
 
 type Props = {
+  attendees: PaymentPageProps["booking"]["attendees"];
   payment: {
     data: PaymentData;
   };
@@ -59,7 +61,7 @@ export default function PaymentComponent(props: Props) {
     elements?.update({ locale: i18n.language as StripeElementLocale });
   }, [elements, i18n.language]);
 
-/*   if (isDarkMode) {
+  /*   if (isDarkMode) {
     CARD_OPTIONS.style!.base!.color = "#fff";
     CARD_OPTIONS.style!.base!.iconColor = "#fff";
     CARD_OPTIONS.style!.base!["::placeholder"]!.color = "#fff";
@@ -103,6 +105,14 @@ export default function PaymentComponent(props: Props) {
         error: new Error(`Payment failed: ${payload.error.message}`),
       });
     } else {
+      await fetch("/api/integrations/thetis/create-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ attendees: props.attendees }),
+      });
+
       const params: { [k: string]: any } = {
         date,
         type: props.eventType.id,

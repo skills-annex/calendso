@@ -131,10 +131,11 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                   {!props.payment.success && (
                     <Elements stripe={getStripe(props.payment.data.stripe_publishable_key)}>
                       <PaymentComponent
-                        payment={props.payment}
+                        attendees={props.booking.attendees}
                         eventType={props.eventType}
-                        user={props.user}
                         location={props.booking.location || ""}
+                        payment={props.payment}
+                        user={props.user}
                       />
                     </Elements>
                   )}
