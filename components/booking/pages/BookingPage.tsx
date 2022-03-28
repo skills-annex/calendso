@@ -9,8 +9,9 @@ import { EventTypeCustomInputType } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { FocusEvent, useEffect, useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import reactHtmlParser from "react-html-parser";
 import { FormattedNumber, IntlProvider } from "react-intl";
 import { ReactMultiEmail } from "react-multi-email";
 import { useMutation } from "react-query";
@@ -98,6 +99,7 @@ const BookingPage = (props: BookingPageProps) => {
   const timeFormat = asStringOrNull(router.query.clock) === "24h" ? "H:mm" : "h:mma";
 
   const [guestToggle, setGuestToggle] = useState(props.booking && props.booking.attendees.length > 1);
+  const [hasBookedIntro, setHasBookedIntro] = useState(false);
 
   type Location = { type: LocationType; address?: string };
   // it would be nice if Prisma at some point in the future allowed for Json<Location>; as of now this is not the case.
@@ -204,6 +206,37 @@ const BookingPage = (props: BookingPageProps) => {
     }
   };
 
+  const checkHasBookedIntro = async (email: string | undefined, eventTypeId: number | undefined) => {
+    const isValidEmail = email?.match(/^\S+@\S+$/);
+
+    if (email && isValidEmail && eventTypeId) {
+      const introBookings = await fetch(
+        `/api/bookings/intro-booking-by-attendee?email=${encodeURIComponent(
+          email
+        )}&eventTypeId=${eventTypeId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        }
+      );
+      const introBooking = await introBookings.json();
+      return introBooking.length > 0;
+    } else {
+      return false;
+    }
+  };
+
+  const handleEmailInputOnBlur = async (e: FocusEvent<HTMLInputElement, Element>) => {
+    const bookedIntro = await checkHasBookedIntro(e?.target?.value, props?.eventType?.id);
+    if (bookedIntro) {
+      setHasBookedIntro(true);
+    } else {
+      setHasBookedIntro(false);
+    }
+  };
+
   const parseDate = (date: string | null) => {
     if (!date) return "No date";
     const parsedZone = parseZone(date);
@@ -259,6 +292,19 @@ const BookingPage = (props: BookingPageProps) => {
       })),
     });
   };
+
+  const ErrorBlock = ({ message }: { message: string }) => (
+    <div className="p-4 mt-2 border-l-4 border-yellow-400 bg-yellow-50">
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <ExclamationIcon className="w-5 h-5 text-yellow-400" aria-hidden="true" />
+        </div>
+        <div className="ml-3">
+          <p className="text-sm text-yellow-700">{reactHtmlParser(message)}</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -332,7 +378,20 @@ const BookingPage = (props: BookingPageProps) => {
                 <p className="mb-8 text-gray-600 dark:text-white">{props.eventType.description}</p>
               </div>
               <div className="sm:w-1/2 sm:pl-8 sm:pr-4">
-                <Form form={bookingForm} handleSubmit={bookEvent}>
+                <Form
+                  form={bookingForm}
+                  handleSubmit={async (booking, e) => {
+                    e?.preventDefault();
+
+                    const bookedIntro = await checkHasBookedIntro(booking?.email, props?.eventType?.id);
+                    if (bookedIntro) {
+                      setHasBookedIntro(true);
+                    } else {
+                      setHasBookedIntro(false);
+                      bookEvent(booking);
+                      return true;
+                    }
+                  }}>
                   <div className="mb-4">
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-white">
                       {t("your_name")}
@@ -361,6 +420,7 @@ const BookingPage = (props: BookingPageProps) => {
                         required
                         className="block w-full border-gray-300 rounded-sm shadow-sm dark:bg-black dark:text-white dark:border-gray-900 focus:ring-black focus:border-brand sm:text-sm"
                         placeholder="you@example.com"
+                        onBlur={(e) => handleEmailInputOnBlur(e)}
                       />
                     </div>
                   </div>
@@ -538,7 +598,7 @@ const BookingPage = (props: BookingPageProps) => {
                     )}
                   </div>
                   <div className="flex items-start space-x-2">
-                    <Button type="submit" loading={mutation.isLoading}>
+                    <Button type="submit" disabled={hasBookedIntro} loading={mutation.isLoading}>
                       {rescheduleUid ? t("reschedule") : t("confirm")}
                     </Button>
                     <Button color="secondary" type="button" onClick={() => router.back()}>
@@ -547,18 +607,15 @@ const BookingPage = (props: BookingPageProps) => {
                   </div>
                 </Form>
                 {mutation.isError && (
-                  <div className="p-4 mt-2 border-l-4 border-yellow-400 bg-yellow-50">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <ExclamationIcon className="w-5 h-5 text-yellow-400" aria-hidden="true" />
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm text-yellow-700">
-                          {rescheduleUid ? t("reschedule_fail") : t("booking_fail")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <ErrorBlock message={rescheduleUid ? t("reschedule_fail") : t("booking_fail")} />
+                )}
+                {hasBookedIntro && (
+                  <ErrorBlock
+                    message={t("intro_already_booked", {
+                      instructorName: props.profile.name,
+                      slug: props.profile.slug,
+                    })}
+                  />
                 )}
               </div>
             </div>
