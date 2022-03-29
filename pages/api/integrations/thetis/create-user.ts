@@ -15,7 +15,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         usersCreated.push(userCreated);
       }
     });
-
     return res.status(200).json({ usersCreated: usersCreated });
   }
 
