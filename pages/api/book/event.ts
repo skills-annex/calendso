@@ -6,7 +6,6 @@ import isBetween from "dayjs/plugin/isBetween";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createThetisUser } from "services/thetis/createThetisUser";
 import short from "short-uuid";
 import { v5 as uuidv5 } from "uuid";
 
@@ -362,11 +361,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     booking = await createBooking();
     evt.uid = booking.uid;
-
-    // Create Thetis users from booking.attendees
-    booking.attendees.forEach(async ({ email, name }) => {
-      await createThetisUser({ email, firstName: name });
-    });
   } catch (_err) {
     const err = getErrorFromUnknown(_err);
     log.error(`Booking ${eventTypeId} failed`, "Error when saving booking to db", err.message);
