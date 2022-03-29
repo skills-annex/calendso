@@ -16,9 +16,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     });
 
-    res.status(200).json({ usersCreated: usersCreated });
+    return res.status(200).json({ usersCreated: usersCreated });
   }
-  res.status(400).json({ message: `failed to create users from attendees: ${attendees}` });
+
+  return res.status(400).json({ message: `failed to create users from attendees: ${attendees}` });
 }
 
 export default handler;
