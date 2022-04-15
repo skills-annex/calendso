@@ -33,9 +33,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           },
           {
             booking: {
-              status: {
-                equals: "ACCEPTED",
-              },
+              AND: [
+                {
+                  status: {
+                    equals: "ACCEPTED",
+                  },
+                },
+                { paid: true },
+              ],
             },
           },
         ],
