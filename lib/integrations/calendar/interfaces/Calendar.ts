@@ -1,4 +1,4 @@
-import { DestinationCalendar, SelectedCalendar } from "@prisma/client";
+import { BookingStatus, DestinationCalendar, SelectedCalendar } from "@prisma/client";
 import { TFunction } from "next-i18next";
 
 import { PaymentInfo } from "@ee/lib/stripe/server";
@@ -61,6 +61,7 @@ export interface CalendarEvent {
   videoCallData?: VideoCallData;
   paymentInfo?: PaymentInfo | null;
   destinationCalendar?: DestinationCalendar | null;
+  status?: BookingStatus;
 }
 
 export interface IntegrationCalendar extends Ensure<Partial<SelectedCalendar>, "externalId"> {

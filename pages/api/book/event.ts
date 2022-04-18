@@ -309,6 +309,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     language: t,
     /** For team events, we will need to handle each member destinationCalendar eventually */
     destinationCalendar: users[0].destinationCalendar,
+    status: eventType.price > 0 ? "PENDING" : "ACCEPTED",
   };
 
   if (eventType.schedulingType === SchedulingType.COLLECTIVE) {
@@ -331,6 +332,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       data: {
         uid,
+        status: evt.status,
         title: evt.title,
         startTime: dayjs(evt.startTime).toDate(),
         endTime: dayjs(evt.endTime).toDate(),
