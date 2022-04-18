@@ -1,4 +1,4 @@
-import { Attendee, Booking } from "@prisma/client";
+import { Attendee, Booking, BookingStatus } from "@prisma/client";
 
 export type BookingConfirmBody = {
   confirmed: boolean;
@@ -22,6 +22,7 @@ export type BookingCreateBody = {
   metadata: {
     [key: string]: string;
   };
+  status?: BookingStatus;
 };
 
 export type BookingResponse = Booking & {

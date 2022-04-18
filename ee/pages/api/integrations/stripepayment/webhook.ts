@@ -101,6 +101,7 @@ async function handlePaymentSuccess(event: Stripe.Event) {
         update: {
           paid: true,
           confirmed: true,
+          status: "ACCEPTED",
         },
       },
     },
