@@ -26,11 +26,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       ],
       where: {
-        attendees: {
-          some: {
-            email,
+        AND: [
+          {
+            attendees: {
+              some: {
+                email,
+              },
+            },
           },
-        },
+          {
+            status: "ACCEPTED",
+          },
+        ],
       },
       select: {
         confirmed: true,
