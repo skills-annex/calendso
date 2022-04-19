@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import prisma from "@lib/prisma";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
@@ -32,6 +32,8 @@ export default function JoinCall(props: JoinCallPageProps) {
   const isUpcoming = new Date(props.booking?.startTime || "") >= enterDate;
   const meetingUnavailable = isUpcoming == true || isPast == true;
 
+  const dailyIframeParent = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (emptyBooking) {
       router.push("/call/no-meeting-found");
@@ -47,25 +49,30 @@ export default function JoinCall(props: JoinCallPageProps) {
   });
 
   useEffect(() => {
-    if (!meetingUnavailable && !emptyBooking && session?.userid !== props.booking.user?.id) {
-      const callFrame = DailyIframe.createFrame({
+    if (
+      !meetingUnavailable &&
+      !emptyBooking &&
+      session?.userid !== props.booking.user?.id &&
+      dailyIframeParent?.current
+    ) {
+      const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
         theme: {
           colors: {
-            accent: "#FFF",
-            accentText: "#111111",
-            background: "#111111",
-            backgroundAccent: "#111111",
+            accent: "#6664C8",
+            accentText: "#FFF",
+            background: "#181818",
+            backgroundAccent: "#181818",
             baseText: "#FFF",
             border: "#292929",
-            mainAreaBg: "#111111",
-            mainAreaBgAccent: "#111111",
+            mainAreaBg: "#181818",
+            mainAreaBgAccent: "#181818",
             mainAreaText: "#FFF",
             supportiveText: "#FFF",
           },
         },
         showLeaveButton: true,
         iframeStyle: {
-          position: "fixed",
+          position: "absolute",
           width: "100%",
           height: "100%",
         },
@@ -89,27 +96,33 @@ export default function JoinCall(props: JoinCallPageProps) {
           }
         });
     }
-    if (!meetingUnavailable && !emptyBooking && session?.userid === props.booking.user?.id) {
-      const callFrame = DailyIframe.createFrame({
+    if (
+      !meetingUnavailable &&
+      !emptyBooking &&
+      session?.userid === props.booking.user?.id &&
+      dailyIframeParent?.current
+    ) {
+      const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
         theme: {
           colors: {
-            accent: "#FFF",
-            accentText: "#111111",
-            background: "#111111",
-            backgroundAccent: "#111111",
+            accent: "#6664C8",
+            accentText: "#FFF",
+            background: "#181818",
+            backgroundAccent: "#181818",
             baseText: "#FFF",
             border: "#292929",
-            mainAreaBg: "#111111",
-            mainAreaBgAccent: "#111111",
+            mainAreaBg: "#181818",
+            mainAreaBgAccent: "#181818",
             mainAreaText: "#FFF",
             supportiveText: "#FFF",
           },
         },
         showLeaveButton: true,
         iframeStyle: {
-          position: "fixed",
+          position: "absolute",
           width: "100%",
           height: "100%",
+          background: "none",
         },
       });
       callFrame
@@ -143,10 +156,22 @@ export default function JoinCall(props: JoinCallPageProps) {
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:image" content="https://cal.com/video-og-image.png" />
       </Head>
-      <div style={{ zIndex: 2, position: "relative" }}>
+      <div
+        style={{
+          alignItems: "center",
+          background: "#181818",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          minHeight: "100vh",
+          minWidth: "100vw",
+          padding: "0 0 24px",
+          position: "relative",
+          zIndex: 2,
+        }}>
         <Link href="/">
           <img
-            className="fixed z-10 hidden w-auto h-5 sm:inline-block"
+            className="fixed z-10 hidden w-auto h-10 sm:inline-block"
             src="/the-skills-logo-black.svg"
             alt="The Skills Logo"
             style={{
@@ -155,7 +180,31 @@ export default function JoinCall(props: JoinCallPageProps) {
             }}
           />
         </Link>
-        {JoinCall}
+        <div
+          ref={dailyIframeParent}
+          style={{
+            height: "100%",
+            maxHeight: "600px",
+            minHeight: "600px",
+            minWidth: "100%",
+            maxWidth: "600px",
+            position: "relative",
+            width: "100%",
+          }}></div>
+        <p style={{ color: "white", padding: "0 24px", textAlign: "center" }}>
+          Having issues with your Audio or Video? <br /> Visit our{" "}
+          <a
+            href={`${process.env.THETIS_SITE_HOST}/video-call-troubleshooting`}
+            rel="noreferrer"
+            style={{
+              color: "#6664C8",
+            }}
+            target="_blank"
+            title="video call troubleshooting">
+            troubleshooting page
+          </a>
+          .
+        </p>
       </div>
     </>
   );

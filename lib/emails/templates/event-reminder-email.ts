@@ -32,6 +32,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
       ${this.getWhen()}
       ${this.getLocation()}
       ${this.getAdditionalNotes()}
+      ${this.getMeetingPreparation()}
     `.replace(/(<([^>]+)>)/gi, "");
   }
 
@@ -67,6 +68,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
                               ${this.getWhen()}
                               ${this.getLocation()}
                               ${this.getAdditionalNotes()}
+                              ${this.getMeetingPreparation()}
                             </div>
                           </td>
                         </tr>
