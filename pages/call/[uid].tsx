@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import prisma from "@lib/prisma";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
@@ -32,6 +32,7 @@ export default function JoinCall(props: JoinCallPageProps) {
   const isUpcoming = new Date(props.booking?.startTime || "") >= enterDate;
   const meetingUnavailable = isUpcoming == true || isPast == true;
 
+  const [hasJoinedCall, setHasJoinedCall] = useState(false);
   const dailyIframeParent = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,25 +57,25 @@ export default function JoinCall(props: JoinCallPageProps) {
       dailyIframeParent?.current
     ) {
       const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
-        theme: {
-          colors: {
-            accent: "#6664C8",
-            accentText: "#FFF",
-            background: "#181818",
-            backgroundAccent: "#181818",
-            baseText: "#FFF",
-            border: "#292929",
-            mainAreaBg: "#181818",
-            mainAreaBgAccent: "#181818",
-            mainAreaText: "#FFF",
-            supportiveText: "#FFF",
-          },
-        },
-        showLeaveButton: true,
         iframeStyle: {
           position: "absolute",
           width: "100%",
           height: "100%",
+        },
+        showLeaveButton: true,
+        theme: {
+          colors: {
+            accent: "#6664C8",
+            accentText: "#FFF",
+            background: "#111111",
+            backgroundAccent: "#111111",
+            baseText: "#FFF",
+            border: "#292929",
+            mainAreaBg: "#111111",
+            mainAreaBgAccent: "#111111",
+            mainAreaText: "#FFF",
+            supportiveText: "#FFF",
+          },
         },
       });
       callFrame
@@ -83,6 +84,7 @@ export default function JoinCall(props: JoinCallPageProps) {
           showLeaveButton: true,
         })
         .then(() => {
+          setHasJoinedCall(true);
           if (props.record) {
             callFrame.startRecording({
               width: 1280,
@@ -103,26 +105,26 @@ export default function JoinCall(props: JoinCallPageProps) {
       dailyIframeParent?.current
     ) {
       const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
-        theme: {
-          colors: {
-            accent: "#6664C8",
-            accentText: "#FFF",
-            background: "#181818",
-            backgroundAccent: "#181818",
-            baseText: "#FFF",
-            border: "#292929",
-            mainAreaBg: "#181818",
-            mainAreaBgAccent: "#181818",
-            mainAreaText: "#FFF",
-            supportiveText: "#FFF",
-          },
-        },
-        showLeaveButton: true,
         iframeStyle: {
           position: "absolute",
           width: "100%",
           height: "100%",
           background: "none",
+        },
+        showLeaveButton: true,
+        theme: {
+          colors: {
+            accent: "#6664C8",
+            accentText: "#FFF",
+            background: "#111111",
+            backgroundAccent: "#111111",
+            baseText: "#FFF",
+            border: "#292929",
+            mainAreaBg: "#111111",
+            mainAreaBgAccent: "#111111",
+            mainAreaText: "#FFF",
+            supportiveText: "#FFF",
+          },
         },
       });
       callFrame
@@ -132,6 +134,7 @@ export default function JoinCall(props: JoinCallPageProps) {
           token: props.booking.dailyRef?.dailytoken,
         })
         .then(() => {
+          setHasJoinedCall(true);
           if (props.record) {
             callFrame.startRecording({
               width: 1280,
@@ -159,13 +162,11 @@ export default function JoinCall(props: JoinCallPageProps) {
       <div
         style={{
           alignItems: "center",
-          background: "#181818",
+          background: "#111111",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           minHeight: "100vh",
-          minWidth: "100vw",
-          padding: "0 0 24px",
           position: "relative",
           zIndex: 2,
         }}>
@@ -183,28 +184,36 @@ export default function JoinCall(props: JoinCallPageProps) {
         <div
           ref={dailyIframeParent}
           style={{
-            height: "100%",
-            maxHeight: "600px",
-            minHeight: "600px",
-            minWidth: "100%",
-            maxWidth: "600px",
             position: "relative",
-            width: "100%",
-          }}></div>
-        <p style={{ color: "white", padding: "0 24px", textAlign: "center" }}>
-          Having issues with your Audio or Video? <br /> Visit our{" "}
-          <a
-            href={`${process.env.THETIS_SITE_HOST}/video-call-troubleshooting`}
-            rel="noreferrer"
-            style={{
-              color: "#6664C8",
-            }}
-            target="_blank"
-            title="video call troubleshooting">
-            troubleshooting page
-          </a>
-          .
-        </p>
+            ...(hasJoinedCall
+              ? {
+                  height: "100vh",
+                  width: "100vw",
+                }
+              : {
+                  flex: 1,
+                  width: "100%",
+                }),
+          }}
+        />
+        {!hasJoinedCall && (
+          <div>
+            <p style={{ color: "white", padding: "24px", textAlign: "center" }}>
+              Having issues with your Audio or Video? <br /> Visit our{" "}
+              <a
+                href={`${process.env.THETIS_SITE_HOST}/video-call-troubleshooting`}
+                rel="noreferrer"
+                style={{
+                  color: "#6664C8",
+                }}
+                target="_blank"
+                title="video call troubleshooting">
+                troubleshooting page
+              </a>
+              .
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
