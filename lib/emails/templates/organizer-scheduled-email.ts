@@ -177,6 +177,7 @@ ${getRichDescription(this.calEvent)}
                               ${this.getLocation()}
                               ${this.getAdditionalNotes()}
                               ${this.getRecordingNotice()}
+                              ${this.getMeetingPreparation()}
                             </div>
                           </td>
                         </tr>
@@ -301,6 +302,19 @@ ${getRichDescription(this.calEvent)}
       <p style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
         "recording_notice"
       )}</p>
+    </div>
+    `;
+  }
+
+  protected getMeetingPreparation(): string {
+    return `
+    <p style="height: 6px"></p>
+    <div>
+      <p style="color: #494949;">${this.calEvent.language("prepare_for_meeting_title")}</p>
+      <div style="color: #494949; font-weight: 400; line-height: 24px;">${this.calEvent.language(
+        "prepare_for_meeting_content",
+        { troubleshoot_url: `${process.env.THETIS_SITE_HOST}/video-call-troubleshooting` }
+      )}</div>
     </div>
     `;
   }

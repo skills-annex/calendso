@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import prisma from "@lib/prisma";
 import { inferSSRProps } from "@lib/types/inferSSRProps";
@@ -32,6 +32,9 @@ export default function JoinCall(props: JoinCallPageProps) {
   const isUpcoming = new Date(props.booking?.startTime || "") >= enterDate;
   const meetingUnavailable = isUpcoming == true || isPast == true;
 
+  const [hasJoinedCall, setHasJoinedCall] = useState(false);
+  const dailyIframeParent = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (emptyBooking) {
       router.push("/call/no-meeting-found");
@@ -47,12 +50,23 @@ export default function JoinCall(props: JoinCallPageProps) {
   });
 
   useEffect(() => {
-    if (!meetingUnavailable && !emptyBooking && session?.userid !== props.booking.user?.id) {
-      const callFrame = DailyIframe.createFrame({
+    if (
+      !meetingUnavailable &&
+      !emptyBooking &&
+      session?.userid !== props.booking.user?.id &&
+      dailyIframeParent?.current
+    ) {
+      const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
+        iframeStyle: {
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        },
+        showLeaveButton: true,
         theme: {
           colors: {
-            accent: "#FFF",
-            accentText: "#111111",
+            accent: "#6664C8",
+            accentText: "#FFF",
             background: "#111111",
             backgroundAccent: "#111111",
             baseText: "#FFF",
@@ -63,12 +77,6 @@ export default function JoinCall(props: JoinCallPageProps) {
             supportiveText: "#FFF",
           },
         },
-        showLeaveButton: true,
-        iframeStyle: {
-          position: "fixed",
-          width: "100%",
-          height: "100%",
-        },
       });
       callFrame
         .join({
@@ -76,6 +84,7 @@ export default function JoinCall(props: JoinCallPageProps) {
           showLeaveButton: true,
         })
         .then(() => {
+          setHasJoinedCall(true);
           if (props.record) {
             callFrame.startRecording({
               width: 1280,
@@ -89,12 +98,24 @@ export default function JoinCall(props: JoinCallPageProps) {
           }
         });
     }
-    if (!meetingUnavailable && !emptyBooking && session?.userid === props.booking.user?.id) {
-      const callFrame = DailyIframe.createFrame({
+    if (
+      !meetingUnavailable &&
+      !emptyBooking &&
+      session?.userid === props.booking.user?.id &&
+      dailyIframeParent?.current
+    ) {
+      const callFrame = DailyIframe.createFrame(dailyIframeParent.current, {
+        iframeStyle: {
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          background: "none",
+        },
+        showLeaveButton: true,
         theme: {
           colors: {
-            accent: "#FFF",
-            accentText: "#111111",
+            accent: "#6664C8",
+            accentText: "#FFF",
             background: "#111111",
             backgroundAccent: "#111111",
             baseText: "#FFF",
@@ -105,12 +126,6 @@ export default function JoinCall(props: JoinCallPageProps) {
             supportiveText: "#FFF",
           },
         },
-        showLeaveButton: true,
-        iframeStyle: {
-          position: "fixed",
-          width: "100%",
-          height: "100%",
-        },
       });
       callFrame
         .join({
@@ -119,6 +134,7 @@ export default function JoinCall(props: JoinCallPageProps) {
           token: props.booking.dailyRef?.dailytoken,
         })
         .then(() => {
+          setHasJoinedCall(true);
           if (props.record) {
             callFrame.startRecording({
               width: 1280,
@@ -143,10 +159,20 @@ export default function JoinCall(props: JoinCallPageProps) {
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:image" content="https://cal.com/video-og-image.png" />
       </Head>
-      <div style={{ zIndex: 2, position: "relative" }}>
+      <div
+        style={{
+          alignItems: "center",
+          background: "#111111",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          minHeight: "100vh",
+          position: "relative",
+          zIndex: 2,
+        }}>
         <Link href="/">
           <img
-            className="fixed z-10 hidden w-auto h-5 sm:inline-block"
+            className="fixed z-10 hidden w-auto h-10 sm:inline-block"
             src="/the-skills-logo-black.svg"
             alt="The Skills Logo"
             style={{
@@ -155,7 +181,39 @@ export default function JoinCall(props: JoinCallPageProps) {
             }}
           />
         </Link>
-        {JoinCall}
+        <div
+          ref={dailyIframeParent}
+          style={{
+            position: "relative",
+            ...(hasJoinedCall
+              ? {
+                  height: "100vh",
+                  width: "100vw",
+                }
+              : {
+                  flex: 1,
+                  width: "100%",
+                }),
+          }}
+        />
+        {!hasJoinedCall && (
+          <div>
+            <p style={{ color: "white", padding: "24px", textAlign: "center" }}>
+              Having issues with your Audio or Video? <br /> Visit our{" "}
+              <a
+                href={`${process.env.THETIS_SITE_HOST}/video-call-troubleshooting`}
+                rel="noreferrer"
+                style={{
+                  color: "#6664C8",
+                }}
+                target="_blank"
+                title="video call troubleshooting">
+                troubleshooting page
+              </a>
+              .
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
