@@ -130,18 +130,20 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
                         <ClockIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
                         {eventType.length} {t("minutes")}
                       </div>
-                      {eventType.price > 0 && (
-                        <div>
-                          <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
-                          <IntlProvider locale="en">
+                      <div>
+                        <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
+                        <IntlProvider locale="en">
+                          {eventType.price > 0 ? (
                             <FormattedNumber
                               value={eventType.price / 100.0}
                               style="currency"
                               currency={eventType.currency.toUpperCase()}
                             />
-                          </IntlProvider>
-                        </div>
-                      )}
+                          ) : (
+                            <span>Free</span>
+                          )}
+                        </IntlProvider>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -178,18 +180,20 @@ const AvailabilityPage = ({ profile, eventType, workingHours, currentBookings }:
                     <ClockIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
                     {eventType.length} {t("minutes")}
                   </p>
-                  {eventType.price > 0 && (
-                    <p className="px-2 py-1 mb-1 -ml-2 text-gray-500">
-                      <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
-                      <IntlProvider locale="en">
+                  <p className="px-2 py-1 mb-1 -ml-2 text-gray-500">
+                    <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
+                    <IntlProvider locale="en">
+                      {eventType.price > 0 ? (
                         <FormattedNumber
                           value={eventType.price / 100.0}
                           style="currency"
                           currency={eventType.currency.toUpperCase()}
                         />
-                      </IntlProvider>
-                    </p>
-                  )}
+                      ) : (
+                        <span>Free</span>
+                      )}
+                    </IntlProvider>
+                  </p>
 
                   <TimezoneDropdown />
 
