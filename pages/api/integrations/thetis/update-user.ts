@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .json({ message: "Could not update default event type for this user: missing id" });
     }
 
-    if (!price) {
+    if (!price && price !== 0) {
       logger.error("Could not update event type for this user: missing price");
       return res
         .status(400)
