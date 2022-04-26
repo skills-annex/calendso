@@ -135,6 +135,7 @@ const PaymentPage: FC<PaymentPageProps> = (props) => {
                         eventType={props.eventType}
                         location={props.booking.location || ""}
                         payment={props.payment}
+                        startTime={date}
                         user={props.user}
                       />
                     </Elements>
