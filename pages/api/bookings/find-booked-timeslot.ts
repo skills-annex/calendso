@@ -30,13 +30,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     if (booking) {
       logger.info(res);
-      res.status(200).json({ isBooked: true, booking });
+      return res.status(200).json({ isBooked: true, booking });
     }
     logger.info(res);
-    res.status(200).json({ isBooked: false, message: "No matching record found" });
-  } else res.status(404).json({ message: "Missing parameters" });
+    return res.status(200).json({ isBooked: false, message: "No matching record found" });
+  }
 
-  res.end();
+  return res.status(404).json({ message: "Missing parameters" });
 }
 
 export default handler;
