@@ -187,14 +187,15 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       startTime: {
         gte: dayjs().toDate(),
       },
-      status: {
-        equals: "ACCEPTED",
-      },
+      // status: {
+      //   equals: "ACCEPTED",
+      // },
     },
     select: {
       startTime: true,
     },
   });
+  console.log("currentBookings: ", currentBookings);
   const currentBookingTimes = currentBookings.map((booking) => booking.startTime.toString());
   const workingHours = getWorkingHours(
     {
