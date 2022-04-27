@@ -1,6 +1,7 @@
 {
   "prepare_for_meeting_title": "Prepare for your meeting",
   "prepare_for_meeting_content": "<ul><li>Come prepared with specific questions and focus areas</li><li>Be ready to screen share any relevant video footage</li><li>Join the meeting 10 minutes early to make sure your audio and video equipment are working before the meeting starts.</li></ul><p>Is your audio or video not working on the call? Visit our <a alt=\"video call troubleshooting\" href=\"{{troubleshoot_url}}\" target=\"_blank\">troubleshooting page</a> for helpful resources.</p>",
+  "slot_already_booked": "This time slot has already been booked <a alt='back to booking calendar' class='underline' href='{{returnLink}}'>choose a new time</a>.",
   "intro_already_booked": "You have already booked an introductory meeting with this instructor. Please continue your booking with {{instructorName}} <a class='font-bold underline' href='/{{slug}}'>here</a>.",
   "trial_days_left": "You have $t(day, {\"count\": {{days}} }) left on your PRO trial",
   "day": "{{count}} day",

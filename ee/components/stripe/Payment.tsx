@@ -1,8 +1,10 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import stripejs, { StripeCardElementChangeEvent, StripeElementLocale } from "@stripe/stripe-js";
+import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { stringify } from "querystring";
 import React, { SyntheticEvent, useEffect, useState } from "react";
+import reactHtmlParser from "react-html-parser";
 
 import { PaymentData } from "@ee/lib/stripe/server";
 import { PaymentPageProps } from "@ee/pages/payment/[uid]";
@@ -33,12 +35,13 @@ const CARD_OPTIONS: stripejs.StripeCardElementOptions = {
 
 type Props = {
   attendees: PaymentPageProps["booking"]["attendees"];
+  eventType: { id: number; title: string; length: number; price: number; slug: string };
+  location: string;
   payment: {
     data: PaymentData;
   };
-  eventType: { id: number; title: string; length: number; price: number };
+  startTime: dayjs.Dayjs;
   user: { username: string | null; name: string | null };
-  location: string;
 };
 
 type States =
@@ -78,60 +81,86 @@ export default function PaymentComponent(props: Props) {
   const handleSubmit = async (ev: SyntheticEvent) => {
     ev.preventDefault();
 
-    if (typeof window !== "undefined" && window.heap) {
-      window.heap.track("Purchase", {
-        productType: "1-on-1",
-        instructorProfile: props.user.name,
-        instructorName: props.user.name,
-        amount: props.eventType.price,
-        eventTypeTitle: props.eventType.title,
-        eventTypeLength: props.eventType.length,
-        eventTypePrice: props.eventType.price,
-      });
-    }
-
-    if (!stripe || !elements) return;
-    const card = elements.getElement(CardElement);
-    if (!card) return;
-    setState({ status: "processing" });
-    const payload = await stripe.confirmCardPayment(props.payment.data.client_secret!, {
-      payment_method: {
-        card,
+    //check if time slot has been taken before completing purchase.
+    const alreadyBooked = await fetch("/api/bookings/find-booked-timeslot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        eventTypeId: props.eventType.id,
+        startTime: props.startTime,
+        username: props.user.username,
+      }),
     });
-    if (payload.error) {
+    const response = await alreadyBooked.json();
+
+    if (response.isBooked) {
       setState({
         status: "error",
-        error: new Error(`Payment failed: ${payload.error.message}`),
+        error: {
+          name: "",
+          message: t("slot_already_booked", {
+            returnLink: `/${props.user.username}/${props.eventType.slug}`,
+          }),
+        },
       });
     } else {
-      await fetch("/api/integrations/thetis/create-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ attendees: props.attendees }),
-      });
-
-      const params: { [k: string]: any } = {
-        date,
-        type: props.eventType.id,
-        user: props.user.username,
-        name,
-      };
-
-      if (props.location) {
-        if (props.location.includes("integration")) {
-          params.location = t("web_conferencing_details_to_follow");
-        } else {
-          params.location = props.location;
-        }
+      if (typeof window !== "undefined" && window.heap) {
+        window.heap.track("Purchase", {
+          productType: "1-on-1",
+          instructorProfile: props.user.name,
+          instructorName: props.user.name,
+          amount: props.eventType.price,
+          eventTypeTitle: props.eventType.title,
+          eventTypeLength: props.eventType.length,
+          eventTypePrice: props.eventType.price,
+        });
       }
 
-      const query = stringify(params);
-      const successUrl = `/success?${query}`;
+      if (!stripe || !elements) return;
+      const card = elements.getElement(CardElement);
+      if (!card) return;
+      setState({ status: "processing" });
+      const payload = await stripe.confirmCardPayment(props.payment.data.client_secret!, {
+        payment_method: {
+          card,
+        },
+      });
+      if (payload.error) {
+        setState({
+          status: "error",
+          error: new Error(`Payment failed: ${payload.error.message}`),
+        });
+      } else {
+        await fetch("/api/integrations/thetis/create-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ attendees: props.attendees }),
+        });
 
-      await router.push(successUrl);
+        const params: { [k: string]: any } = {
+          date,
+          type: props.eventType.id,
+          user: props.user.username,
+          name,
+        };
+
+        if (props.location) {
+          if (props.location.includes("integration")) {
+            params.location = t("web_conferencing_details_to_follow");
+          } else {
+            params.location = props.location;
+          }
+        }
+
+        const query = stringify(params);
+        const successUrl = `/success?${query}`;
+
+        await router.push(successUrl);
+      }
     }
   };
   return (
@@ -149,8 +178,8 @@ export default function PaymentComponent(props: Props) {
         </Button>
       </div>
       {state.status === "error" && (
-        <div className="mt-4 text-center text-gray-700 dark:text-gray-300" role="alert">
-          {state.error.message}
+        <div className="mt-4 text-center text-red-600" role="alert">
+          {reactHtmlParser(state.error.message)}
         </div>
       )}
     </form>

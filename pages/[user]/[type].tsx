@@ -187,6 +187,9 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
       startTime: {
         gte: dayjs().toDate(),
       },
+      status: {
+        equals: "ACCEPTED",
+      },
     },
     select: {
       startTime: true,
