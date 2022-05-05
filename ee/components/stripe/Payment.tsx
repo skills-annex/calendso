@@ -3,6 +3,7 @@ import stripejs, { StripeCardElementChangeEvent, StripeElementLocale } from "@st
 import { useRouter } from "next/router";
 import { stringify } from "querystring";
 import React, { SyntheticEvent, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 
 import { PaymentData } from "@ee/lib/stripe/server";
 import { PaymentPageProps } from "@ee/pages/payment/[uid]";
@@ -31,8 +32,13 @@ const CARD_OPTIONS: stripejs.StripeCardElementOptions = {
   },
 } as const;
 
+export type OneOnOneAttendee = PaymentPageProps["booking"]["attendees"][number] & {
+  hasAuthorizedSms?: boolean;
+  mobilePhone?: string;
+};
+
 type Props = {
-  attendees: PaymentPageProps["booking"]["attendees"];
+  attendees: OneOnOneAttendee[];
   payment: {
     data: PaymentData;
   };
@@ -54,7 +60,7 @@ export default function PaymentComponent(props: Props) {
   const [state, setState] = useState<States>({ status: "idle" });
   const stripe = useStripe();
   const elements = useElements();
-
+  const [cookies] = useCookies();
   // const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
@@ -105,6 +111,10 @@ export default function PaymentComponent(props: Props) {
         error: new Error(`Payment failed: ${payload.error.message}`),
       });
     } else {
+      if (cookies.hasAuthorizedSms && cookies.mobilePhone) {
+        props.attendees[0].hasAuthorizedSms = cookies.hasAuthorizedSms === "true";
+        props.attendees[0].mobilePhone = cookies.mobilePhone;
+      }
       await fetch("/api/integrations/thetis/create-user", {
         method: "POST",
         headers: {

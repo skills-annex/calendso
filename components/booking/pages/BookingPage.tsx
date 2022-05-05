@@ -9,7 +9,8 @@ import { EventTypeCustomInputType } from "@prisma/client";
 import dayjs from "dayjs";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { FocusEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FocusEvent, useEffect, useMemo, useState } from "react";
+import { useCookies } from "react-cookie";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import reactHtmlParser from "react-html-parser";
 import { FormattedNumber, IntlProvider } from "react-intl";
@@ -56,6 +57,10 @@ const BookingPage = (props: BookingPageProps) => {
       // go to success page.
     },
   });*/
+  const [mobilePhone, setMobilePhone] = useState("");
+  const [hasAuthorizedSms, setHasAuthorizedSms] = useState(true);
+  const [, setCookie] = useCookies(["mobilePhone", "hasAuthorizedSms"]);
+
   const mutation = useMutation(createBooking, {
     onSuccess: async ({ attendees, paymentUid, ...responseData }) => {
       if (paymentUid) {
@@ -103,6 +108,7 @@ const BookingPage = (props: BookingPageProps) => {
   const [guestToggle, setGuestToggle] = useState(props.booking && props.booking.attendees.length > 1);
   const [hasBookedIntro, setHasBookedIntro] = useState(false);
   const [hasBirthYearError, setHasBirthYearError] = useState(false);
+  const [hasMobilePhoneError, setHasMobilePhoneError] = useState(false);
 
   type Location = { type: LocationType; address?: string };
   // it would be nice if Prisma at some point in the future allowed for Json<Location>; as of now this is not the case.
@@ -249,6 +255,12 @@ const BookingPage = (props: BookingPageProps) => {
     } else {
       setHasBookedIntro(false);
     }
+    setHasMobilePhoneError(false);
+  };
+
+  const handleMobilePhoneInputOnBlur = async (e: ChangeEvent<HTMLInputElement>) => {
+    setMobilePhone(`1${e.target.value.replace(/[-()\s]/g, "")}`);
+    setHasMobilePhoneError(false);
   };
 
   const handleBirthYearChange = async (
@@ -460,8 +472,34 @@ const BookingPage = (props: BookingPageProps) => {
                       setHasBookedIntro(true);
                     } else {
                       setHasBookedIntro(false);
-                      bookEvent(booking);
-                      return true;
+                      const response = await fetch("/api/integrations/thetis/get-users", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ mobilePhone }),
+                      });
+                      const usersFound = await response.json();
+                      const noUsersFound = usersFound?.data.length === 0;
+                      const isExistingUser = usersFound.data.some(
+                        ({ email }: { email: string }) => email === booking?.email
+                      );
+
+                      const isValidMobilePhone = noUsersFound || isExistingUser;
+
+                      if (isValidMobilePhone) {
+                        setCookie("mobilePhone", mobilePhone, {
+                          expires: dayjs().add(1, "hour").toDate(),
+                        });
+                        setCookie("hasAuthorizedSms", hasAuthorizedSms, {
+                          expires: dayjs().add(1, "hour").toDate(),
+                        });
+                        bookEvent(booking);
+                        return true;
+                      } else {
+                        setHasMobilePhoneError(true);
+                        return true;
+                      }
                     }
                   }}>
                   <div className="mb-4">
@@ -535,18 +573,37 @@ const BookingPage = (props: BookingPageProps) => {
                       ))}
                     </div>
                   )}
-                  {selectedLocation === LocationType.Phone && (
-                    <div className="mb-4">
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700 dark:text-white">
-                        {t("phone_number")}
-                      </label>
-                      <div className="mt-1">
-                        <PhoneInput name="phone" placeholder={t("enter_phone_number")} id="phone" required />
-                      </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="mobilePhone"
+                      className="block text-sm font-medium text-gray-700 dark:text-white">
+                      {t("phone_number")}
+                    </label>
+                    <div className="mt-1">
+                      <PhoneInput
+                        name="mobilePhone"
+                        defaultCountry="US"
+                        placeholder={t("enter_phone_number")}
+                        id="mobilePhone"
+                        onBlur={(e: ChangeEvent<HTMLInputElement>) => handleMobilePhoneInputOnBlur(e)}
+                        required
+                      />
                     </div>
-                  )}
+                  </div>
+                  <div className="flex mb-4 mt-5">
+                    <label
+                      htmlFor="hasAuthorizedSms"
+                      className="flex mb-1 text-sm font-medium text-gray-700 dark:text-white">
+                      <input
+                        type="checkbox"
+                        id="hasAuthorizedSms"
+                        className="w-4 h-4 mr-2 mt-1 text-black border-gray-300 rounded focus:ring-black"
+                        defaultChecked={hasAuthorizedSms}
+                        onChange={(e) => setHasAuthorizedSms(e.currentTarget.checked)}
+                      />
+                      <p>{reactHtmlParser(t("automated_event_reminder"))}</p>
+                    </label>
+                  </div>
                   {props.eventType.customInputs
                     .sort((a, b) => a.id - b.id)
                     .map((input) => (
@@ -688,7 +745,10 @@ const BookingPage = (props: BookingPageProps) => {
                     )}
                   </div>
                   <div className="flex items-start space-x-2">
-                    <Button type="submit" disabled={hasBookedIntro} loading={mutation.isLoading}>
+                    <Button
+                      type="submit"
+                      disabled={hasBookedIntro || hasMobilePhoneError}
+                      loading={mutation.isLoading}>
                       {rescheduleUid ? t("reschedule") : t("confirm")}
                     </Button>
                     <Button color="secondary" type="button" onClick={() => router.back()}>
@@ -707,6 +767,7 @@ const BookingPage = (props: BookingPageProps) => {
                     })}
                   />
                 )}
+                {hasMobilePhoneError && <ErrorBlock message={t("mobile_phone_in_use")} />}
               </div>
             </div>
           </div>

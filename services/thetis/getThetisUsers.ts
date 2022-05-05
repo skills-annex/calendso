@@ -1,26 +1,14 @@
 import logger from "@lib/logger";
 
-export interface ICreateThetisUser {
-  email: string;
+export interface IGetThetisUser {
+  email?: string;
   firstName?: string;
-  hasAllAccess?: boolean;
-  hasAuthorizedSms?: boolean;
-  hasTemporaryPassword?: boolean;
+  id?: string;
   lastName?: string;
   mobilePhone?: string;
-  password?: string;
 }
 
-const createThetisUser = async ({
-  email,
-  firstName,
-  hasAllAccess = false,
-  hasAuthorizedSms = false,
-  hasTemporaryPassword = true,
-  lastName,
-  mobilePhone = "",
-  password,
-}: ICreateThetisUser) => {
+const getThetisUsers = async ({ email, firstName, id, lastName, mobilePhone }: IGetThetisUser) => {
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
   const thetisApiKey = process.env.THETIS_API_KEY;
   if (!thetisSiteHost) {
@@ -33,11 +21,7 @@ const createThetisUser = async ({
     return;
   }
 
-  if (!email) {
-    logger.error("Missing email to create Thetis user");
-    return;
-  }
-  const result = await fetch(`${thetisSiteHost}/api/users`, {
+  const result = await fetch(`${thetisSiteHost}/api/users/get-users`, {
     method: "POST",
     headers: {
       "x-api-key": thetisApiKey,
@@ -46,16 +30,13 @@ const createThetisUser = async ({
     body: JSON.stringify({
       email,
       firstName,
-      hasAllAccess,
-      hasAuthorizedSms,
-      hasTemporaryPassword,
+      id,
       lastName,
       mobilePhone,
-      password,
     }),
   });
 
   return result;
 };
 
-export { createThetisUser };
+export default getThetisUsers;

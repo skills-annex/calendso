@@ -1,18 +1,28 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createThetisUser } from "services/thetis/createThetisUser";
 
-import { PaymentPageProps } from "@ee/pages/payment/[uid]";
+import { OneOnOneAttendee } from "@ee/components/stripe/Payment";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { attendees }: { attendees: PaymentPageProps["booking"]["attendees"] } = req.body;
+  const { attendees }: { attendees: OneOnOneAttendee[] } = req.body;
 
   const usersCreated: number[] = [];
 
   if (attendees && attendees.length > 0) {
-    attendees?.forEach(async ({ email, name }) => {
-      const userCreated = await createThetisUser({ email, firstName: name });
+    attendees?.forEach(async ({ email, hasAuthorizedSms, mobilePhone, name }: OneOnOneAttendee) => {
+      const fullName = name.split(" ");
+      const firstName = fullName.slice(0, -1).join(" ");
+      const lastName = fullName.slice(fullName.length - 1).join(" ");
+      const userCreated = await createThetisUser({
+        email,
+        firstName,
+        hasAuthorizedSms,
+        lastName,
+        mobilePhone,
+      });
+
       if (userCreated) {
-        usersCreated.push(userCreated);
+        usersCreated.push(userCreated.status);
       }
     });
     return res.status(200).json({ usersCreated: usersCreated });
