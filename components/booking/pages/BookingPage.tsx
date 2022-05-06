@@ -427,11 +427,30 @@ const BookingPage = (props: BookingPageProps) => {
                   handleSubmit={async (booking, e) => {
                     e?.preventDefault();
 
-                    if (isFree && !booking?.birthYear) {
-                      setHasBirthYearError(true);
-                      return;
+                    if (isFree) {
+                      if (!booking?.birthYear) {
+                        setHasBirthYearError(true);
+                        return true;
+                      }
+                      setHasBirthYearError(false);
+                      const isThirteenOrYounger = dayjs().year() - Number(booking.birthYear) <= 13;
+                      if (isThirteenOrYounger) {
+                        router.push({
+                          pathname: "/success",
+                          query: {
+                            date,
+                            type: props.eventType.id,
+                            user: "",
+                            reschedule: false,
+                            name: "",
+                            email: "",
+                            location: "",
+                          },
+                        });
+                        return true;
+                      }
                     }
-                    setHasBirthYearError(false);
+
                     const bookedIntro = await checkHasBookedIntro(booking?.email, props?.eventType?.id);
                     if (bookedIntro) {
                       setHasBookedIntro(true);
