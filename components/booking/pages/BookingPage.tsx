@@ -16,7 +16,6 @@ import { FormattedNumber, IntlProvider } from "react-intl";
 import { ReactMultiEmail } from "react-multi-email";
 import { useMutation } from "react-query";
 import { SingleValue } from "react-select";
-import updateContact from "services/hubspot";
 
 import { createPaymentLink } from "@ee/lib/stripe/client";
 
@@ -272,20 +271,6 @@ const BookingPage = (props: BookingPageProps) => {
 
   // make sure contact gets updated in hs
   const bookEvent = async (booking: BookingFormValues) => {
-    if (isFree) {
-      await updateContact({
-        email: booking.email,
-        data: {
-          email: booking.email,
-          firstname: booking.name.split(" ")[0],
-          lastname: booking.name.split(" ").slice(1).join(" "),
-          n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
-          n1on1_instructor_last_purchased_image_url: props.eventType.users[0].avatar || "",
-          birth_year: booking.birthYear,
-        },
-      });
-    }
-
     if (typeof window !== "undefined" && window.heap) {
       (window.heap.identify as HeapIdentify)(booking.email);
       window.heap.track("Submit Calendar Booking Form", {
@@ -433,6 +418,25 @@ const BookingPage = (props: BookingPageProps) => {
                         return true;
                       }
                       setHasBirthYearError(false);
+
+                      await fetch("/api/hs-proxy", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          email: booking.email,
+                          properties: {
+                            email: booking.email,
+                            firstname: booking.name.split(" ")[0],
+                            lastname: booking.name.split(" ").slice(1).join(" "),
+                            n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
+                            n1on1_instructor_last_purchased_image_url: props.eventType.users[0].avatar || "",
+                            birth_year: booking.birthYear,
+                          },
+                        }),
+                      });
+
                       const isThirteenOrYounger = dayjs().year() - Number(booking.birthYear) <= 13;
                       if (isThirteenOrYounger) {
                         router.push({

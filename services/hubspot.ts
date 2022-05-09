@@ -1,7 +1,9 @@
+export type HsProperties = {
+  [property: string]: string | number;
+};
+
 interface ISendEvent {
-  data: {
-    [property: string]: string | number;
-  };
+  data: HsProperties;
   email: string;
 }
 
