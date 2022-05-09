@@ -472,13 +472,15 @@ const BookingPage = (props: BookingPageProps) => {
                       setHasBookedIntro(true);
                     } else {
                       setHasBookedIntro(false);
-                      const response = await fetch("/api/integrations/thetis/get-users", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ mobilePhone }),
-                      });
+                      const response = await fetch(
+                        `/api/integrations/thetis/get-users?mobilePhone=${mobilePhone}`,
+                        {
+                          method: "GET",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      );
                       const usersFound = await response.json();
                       const noUsersFound = usersFound?.data.length === 0;
                       const isExistingUser = usersFound.data.some(
