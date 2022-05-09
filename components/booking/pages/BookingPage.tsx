@@ -15,6 +15,7 @@ import reactHtmlParser from "react-html-parser";
 import { FormattedNumber, IntlProvider } from "react-intl";
 import { ReactMultiEmail } from "react-multi-email";
 import { useMutation } from "react-query";
+import { SingleValue } from "react-select";
 
 import { createPaymentLink } from "@ee/lib/stripe/client";
 
@@ -34,6 +35,7 @@ import { EmailInput, Form } from "@components/form/fields";
 import AvatarGroup from "@components/ui/AvatarGroup";
 import { Button } from "@components/ui/Button";
 import PhoneInput from "@components/ui/form/PhoneInput";
+import Select from "@components/ui/form/Select";
 
 import { BookPageProps } from "../../../pages/[user]/book";
 import { TeamBookingPageProps } from "../../../pages/team/[slug]/book";
@@ -100,6 +102,7 @@ const BookingPage = (props: BookingPageProps) => {
 
   const [guestToggle, setGuestToggle] = useState(props.booking && props.booking.attendees.length > 1);
   const [hasBookedIntro, setHasBookedIntro] = useState(false);
+  const [hasBirthYearError, setHasBirthYearError] = useState(false);
 
   type Location = { type: LocationType; address?: string };
   // it would be nice if Prisma at some point in the future allowed for Json<Location>; as of now this is not the case.
@@ -131,6 +134,7 @@ const BookingPage = (props: BookingPageProps) => {
   };
 
   type BookingFormValues = {
+    birthYear: string;
     name: string;
     email: string;
     notes?: string;
@@ -171,6 +175,16 @@ const BookingPage = (props: BookingPageProps) => {
       guests: props.booking.attendees.slice(1).map((attendee) => attendee.email),
     };
   };
+
+  const birthYearOptions = Array.from(Array(new Date().getFullYear() - 1899).keys())
+    .map((e) => e + 1900)
+    .reverse()
+    .map((fullYear) => {
+      const year = fullYear.toString();
+      return { label: year, value: year };
+    });
+
+  const isFree = !props.eventType?.price;
 
   const bookingForm = useForm<BookingFormValues>({
     defaultValues: defaultValues(),
@@ -237,6 +251,16 @@ const BookingPage = (props: BookingPageProps) => {
     }
   };
 
+  const handleBirthYearChange = async (
+    e: SingleValue<{
+      label: string;
+      value: string;
+    }>
+  ) => {
+    e?.value && bookingForm.setValue("birthYear", e.value);
+    setHasBirthYearError(false);
+  };
+
   const parseDate = (date: string | null) => {
     if (!date) return "No date";
     const parsedZone = parseZone(date);
@@ -245,7 +269,8 @@ const BookingPage = (props: BookingPageProps) => {
     return formattedTime + ", " + dayjs(date).toDate().toLocaleString(i18n.language, { dateStyle: "full" });
   };
 
-  const bookEvent = (booking: BookingFormValues) => {
+  // make sure contact gets updated in hs
+  const bookEvent = async (booking: BookingFormValues) => {
     if (typeof window !== "undefined" && window.heap) {
       (window.heap.identify as HeapIdentify)(booking.email);
       window.heap.track("Submit Calendar Booking Form", {
@@ -353,9 +378,12 @@ const BookingPage = (props: BookingPageProps) => {
                   <ClockIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
                   {props.eventType.length} {t("minutes")}
                 </p>
-                {"price" in props.eventType && props.eventType.price > 0 && (
-                  <p className="px-2 py-1 mb-1 -ml-2 text-gray-500">
-                    <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
+
+                <p className="px-2 py-1 mb-1 -ml-2 text-gray-500">
+                  <CreditCardIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
+                  {isFree ? (
+                    "Free"
+                  ) : (
                     <IntlProvider locale="en">
                       <FormattedNumber
                         value={props.eventType.price / 100.0}
@@ -363,8 +391,9 @@ const BookingPage = (props: BookingPageProps) => {
                         currency={props.eventType.currency.toUpperCase()}
                       />
                     </IntlProvider>
-                  </p>
-                )}
+                  )}
+                </p>
+
                 {selectedLocation === LocationType.InPerson && (
                   <p className="mb-2 text-gray-500">
                     <LocationMarkerIcon className="inline-block w-4 h-4 mr-1 -mt-1" />
@@ -382,6 +411,49 @@ const BookingPage = (props: BookingPageProps) => {
                   form={bookingForm}
                   handleSubmit={async (booking, e) => {
                     e?.preventDefault();
+
+                    if (isFree) {
+                      if (!booking?.birthYear) {
+                        setHasBirthYearError(true);
+                        return true;
+                      }
+                      setHasBirthYearError(false);
+
+                      await fetch("/api/hs-proxy", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          email: booking.email,
+                          properties: {
+                            email: booking.email,
+                            firstname: booking.name.split(" ")[0],
+                            lastname: booking.name.split(" ").slice(1).join(" "),
+                            n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
+                            n1on1_instructor_last_purchased_image_url: props.eventType.users[0].avatar || "",
+                            birth_year: booking.birthYear,
+                          },
+                        }),
+                      });
+
+                      const isThirteenOrYounger = dayjs().year() - Number(booking.birthYear) <= 13;
+                      if (isThirteenOrYounger) {
+                        router.push({
+                          pathname: "/success",
+                          query: {
+                            date,
+                            type: props.eventType.id,
+                            user: "",
+                            reschedule: false,
+                            name: "",
+                            email: "",
+                            location: "",
+                          },
+                        });
+                        return true;
+                      }
+                    }
 
                     const bookedIntro = await checkHasBookedIntro(booking?.email, props?.eventType?.id);
                     if (bookedIntro) {
@@ -424,6 +496,24 @@ const BookingPage = (props: BookingPageProps) => {
                       />
                     </div>
                   </div>
+                  {isFree && (
+                    <div className="mb-4">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 dark:text-white">
+                        Birth Year
+                      </label>
+                      <div className="mt-1">
+                        <Select
+                          {...bookingForm.register("birthYear")}
+                          defaultValue={{ label: "", value: "" }}
+                          onChange={(e) => handleBirthYearChange(e)}
+                          options={birthYearOptions}
+                        />
+                      </div>
+                      {hasBirthYearError && <ErrorBlock message={t("error_required_field")} />}
+                    </div>
+                  )}
                   {locations.length > 1 && (
                     <div className="mb-4">
                       <span className="block text-sm font-medium text-gray-700 dark:text-white">
