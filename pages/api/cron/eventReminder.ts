@@ -1,5 +1,8 @@
 import { Attendee, ReminderType } from "@prisma/client";
 import dayjs from "dayjs";
+import advanced from "dayjs/plugin/advancedFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import type { NextApiRequest, NextApiResponse } from "next";
 import sendSms from "services/thetis/sendSms";
 
@@ -9,6 +12,10 @@ import logger from "@lib/logger";
 import prisma from "@lib/prisma";
 
 import { getTranslation } from "@server/lib/i18n";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(advanced);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const apiKey = req.headers.authorization || req.query.apiKey;
@@ -124,6 +131,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   eventName,
                   instructorName,
                   meetingLink,
+                  startTime: `${dayjs(booking.startTime)
+                    .tz("America/Los_Angeles")
+                    .format("dddd MMM D, h:mm A z")} (Pacific Daylight Time)`,
+                  timeToEvent: `${interval / 60} Hours`,
                 });
                 smsResponses.push(smsResponse);
               } catch (e) {
