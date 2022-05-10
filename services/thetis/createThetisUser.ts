@@ -2,19 +2,23 @@ import logger from "@lib/logger";
 
 export interface ICreateThetisUser {
   email: string;
-  password?: string;
   firstName?: string;
-  lastName?: string;
   hasAllAccess?: boolean;
+  hasAuthorizedSms?: boolean;
   hasTemporaryPassword?: boolean;
+  lastName?: string;
+  mobilePhone?: string;
+  password?: string;
 }
 
 const createThetisUser = async ({
   email,
   firstName,
   hasAllAccess = false,
+  hasAuthorizedSms = false,
   hasTemporaryPassword = true,
   lastName,
+  mobilePhone = "",
   password,
 }: ICreateThetisUser) => {
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
@@ -39,10 +43,19 @@ const createThetisUser = async ({
       "x-api-key": thetisApiKey,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, firstName, lastName, hasAllAccess, hasTemporaryPassword, password }),
+    body: JSON.stringify({
+      email,
+      firstName,
+      hasAllAccess,
+      hasAuthorizedSms,
+      hasTemporaryPassword,
+      lastName,
+      mobilePhone,
+      password,
+    }),
   });
 
-  return result.status;
+  return result;
 };
 
 export { createThetisUser };

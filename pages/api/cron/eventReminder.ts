@@ -1,9 +1,11 @@
-import { ReminderType } from "@prisma/client";
+import { Attendee, ReminderType } from "@prisma/client";
 import dayjs from "dayjs";
 import type { NextApiRequest, NextApiResponse } from "next";
+import sendSms from "services/thetis/sendSms";
 
 import { sendEventReminderEmails } from "@lib/emails/email-manager";
 import { CalendarEvent } from "@lib/integrations/calendar/interfaces/Calendar";
+import logger from "@lib/logger";
 import prisma from "@lib/prisma";
 
 import { getTranslation } from "@server/lib/i18n";
@@ -107,8 +109,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
 
         const eventAttendees = [{ name, email: user.email, timeZone: user.timeZone }, ...attendees];
+
+        const sendEventReminderSms = async (attendees: Attendee[], booking: typeof bookings[number]) => {
+          const smsResponses = [];
+          const eventName = booking?.title;
+          const instructorName = booking.user?.name || "";
+          const meetingLink = booking?.references[0]?.meetingUrl;
+
+          for (const attendeee of attendees) {
+            if (attendeee?.email && meetingLink && eventName) {
+              try {
+                const smsResponse = await sendSms({
+                  email: attendeee.email,
+                  eventName,
+                  instructorName,
+                  meetingLink,
+                });
+                smsResponses.push(smsResponse);
+              } catch (e) {
+                logger.error(`failed to send event reminder sms to ${attendeee?.email}`, e.message);
+              }
+            }
+          }
+          return smsResponses;
+        };
+        const eventReminderSmsResponses = await sendEventReminderSms(attendees, booking);
         const eventReminderEmailsResponses = await sendEventReminderEmails(evt, eventAttendees);
-        responses = [...responses, ...eventReminderEmailsResponses];
+        responses = [...responses, ...eventReminderEmailsResponses, ...eventReminderSmsResponses];
 
         await prisma.reminderMail.create({
           data: {
