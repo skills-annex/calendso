@@ -133,7 +133,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   meetingLink,
                   startTime: `${dayjs(booking.startTime)
                     .tz("America/Los_Angeles")
-                    .format("dddd MMM D, h:mm A z")} (Pacific Daylight Time)`,
+                    .format("dddd MMM D, h:mm A z")}`,
                   timeToEvent: `${interval / 60} Hours`,
                 });
                 smsResponses.push(smsResponse);
