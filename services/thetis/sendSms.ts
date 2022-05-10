@@ -6,9 +6,11 @@ export interface ISendSms {
   instructorName?: string;
   meetingLink?: string;
   mobilePhone?: string;
+  startTime?: string;
+  timeToEvent?: string;
 }
 
-const sendSms = async ({ email, eventName, instructorName, meetingLink, mobilePhone }: ISendSms) => {
+const sendSms = async (sms: ISendSms) => {
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
   const thetisApiKey = process.env.THETIS_API_KEY;
   if (!thetisSiteHost) {
@@ -27,13 +29,7 @@ const sendSms = async ({ email, eventName, instructorName, meetingLink, mobilePh
       "x-api-key": thetisApiKey,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      email,
-      eventName,
-      instructorName,
-      meetingLink,
-      mobilePhone,
-    }),
+    body: JSON.stringify(sms),
   });
 
   return result;
