@@ -4,6 +4,7 @@ import advanced from "dayjs/plugin/advancedFormat";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import type { NextApiRequest, NextApiResponse } from "next";
+import getThetisUsers from "services/thetis/getThetisUsers";
 import sendSms from "services/thetis/sendSms";
 
 import { sendEventReminderEmails } from "@lib/emails/email-manager";
@@ -123,14 +124,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const instructorName = booking.user?.name || "";
           const meetingLink = booking?.references[0]?.meetingUrl;
 
-          for (const attendeee of attendees) {
-            if (attendeee?.email && meetingLink && eventName) {
+          for (const attendee of attendees) {
+            const response = await getThetisUsers({
+              email: attendee.email,
+            });
+            const usersFound = await response?.json();
+            const { hasAuthorizedSms, mobilePhone } = usersFound?.data[0] || {};
+
+            if (hasAuthorizedSms && mobilePhone && meetingLink && eventName) {
               try {
                 const smsResponse = await sendSms({
-                  email: attendeee.email,
+                  email: attendee.email,
                   eventName,
                   instructorName,
                   meetingLink,
+                  mobilePhone,
                   startTime: `${dayjs(booking.startTime)
                     .tz("America/Los_Angeles")
                     .format("dddd MMM D, h:mm A z")}`,
@@ -138,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
                 smsResponses.push(smsResponse);
               } catch (e) {
-                logger.error(`failed to send event reminder sms to ${attendeee?.email}`, e.message);
+                logger.error(`failed to send event reminder sms to ${attendee?.email}`, e.message);
               }
             }
           }
