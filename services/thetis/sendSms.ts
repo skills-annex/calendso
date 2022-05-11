@@ -11,6 +11,7 @@ export interface ISendSms {
 }
 
 const sendSms = async (sms: ISendSms) => {
+  const { email, mobilePhone } = sms;
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
   const thetisApiKey = process.env.THETIS_API_KEY;
   if (!thetisSiteHost) {
@@ -23,16 +24,29 @@ const sendSms = async (sms: ISendSms) => {
     return;
   }
 
-  const result = await fetch(`${thetisSiteHost}/api/twilio/send-sms`, {
-    method: "POST",
-    headers: {
-      "x-api-key": thetisApiKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(sms),
-  });
+  if (!mobilePhone) {
+    logger.error(`Unable to send SMS reminder to ${email || "unknown email"}, missing mobile phone number`);
+    return;
+  }
 
-  return result;
+  if (!email) {
+    logger.error(`Unable to send SMS reminder to ${mobilePhone || "unknown number"}, missing email`);
+  }
+
+  try {
+    const result = await fetch(`${thetisSiteHost}/api/twilio/send-sms`, {
+      method: "POST",
+      headers: {
+        "x-api-key": thetisApiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sms),
+    });
+
+    return result;
+  } catch (e) {
+    logger.error(e);
+  }
 };
 
 export default sendSms;

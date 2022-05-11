@@ -2,10 +2,14 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getThetisUsers from "services/thetis/getThetisUsers";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { mobilePhone } = req.query;
+  const email = req.query?.email as string | undefined;
+  const mobilePhone = req.query?.mobilePhone as string | undefined;
 
   try {
-    const response = await getThetisUsers({ mobilePhone: mobilePhone as string });
+    const response = await getThetisUsers({
+      email,
+      mobilePhone,
+    });
     const usersFound = await response?.json();
 
     return res.status(200).send(usersFound);
