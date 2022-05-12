@@ -15,6 +15,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import reactHtmlParser from "react-html-parser";
 import { FormattedNumber, IntlProvider } from "react-intl";
 import { ReactMultiEmail } from "react-multi-email";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
 import { useMutation } from "react-query";
 import { SingleValue } from "react-select";
 
@@ -108,7 +109,7 @@ const BookingPage = (props: BookingPageProps) => {
   const [guestToggle, setGuestToggle] = useState(props.booking && props.booking.attendees.length > 1);
   const [hasBookedIntro, setHasBookedIntro] = useState(false);
   const [hasBirthYearError, setHasBirthYearError] = useState(false);
-  const [hasMobilePhoneError, setHasMobilePhoneError] = useState(false);
+  const [mobilePhoneError, setMobilePhoneError] = useState("");
 
   type Location = { type: LocationType; address?: string };
   // it would be nice if Prisma at some point in the future allowed for Json<Location>; as of now this is not the case.
@@ -255,12 +256,16 @@ const BookingPage = (props: BookingPageProps) => {
     } else {
       setHasBookedIntro(false);
     }
-    setHasMobilePhoneError(false);
+    setMobilePhoneError("");
   };
 
   const handleMobilePhoneInputOnBlur = async (e: ChangeEvent<HTMLInputElement>) => {
-    setMobilePhone(`1${e.target.value.replace(/[-()\s]/g, "")}`);
-    setHasMobilePhoneError(false);
+    if (isPossiblePhoneNumber(`+1${e.target.value}`)) {
+      setMobilePhone(`1${e.target.value.replace(/[-()\s]/g, "")}`);
+      setMobilePhoneError("");
+    } else {
+      setMobilePhoneError(t("invalid_mobile_phone"));
+    }
   };
 
   const handleBirthYearChange = async (
@@ -499,7 +504,7 @@ const BookingPage = (props: BookingPageProps) => {
                         bookEvent(booking);
                         return true;
                       } else {
-                        setHasMobilePhoneError(true);
+                        setMobilePhoneError(t("mobile_phone_in_use"));
                         return true;
                       }
                     }
@@ -585,7 +590,7 @@ const BookingPage = (props: BookingPageProps) => {
                       <PhoneInput
                         name="mobilePhone"
                         defaultCountry="US"
-                        placeholder={t("enter_phone_number")}
+                        placeholder={"(888) 888-8888"}
                         id="mobilePhone"
                         onBlur={(e: ChangeEvent<HTMLInputElement>) => handleMobilePhoneInputOnBlur(e)}
                         required
@@ -749,7 +754,7 @@ const BookingPage = (props: BookingPageProps) => {
                   <div className="flex items-start space-x-2">
                     <Button
                       type="submit"
-                      disabled={hasBookedIntro || hasMobilePhoneError}
+                      disabled={hasBookedIntro || !!mobilePhoneError}
                       loading={mutation.isLoading}>
                       {rescheduleUid ? t("reschedule") : t("confirm")}
                     </Button>
@@ -769,7 +774,7 @@ const BookingPage = (props: BookingPageProps) => {
                     })}
                   />
                 )}
-                {hasMobilePhoneError && <ErrorBlock message={t("mobile_phone_in_use")} />}
+                {mobilePhoneError && <ErrorBlock message={mobilePhoneError} />}
               </div>
             </div>
           </div>

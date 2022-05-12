@@ -3,6 +3,7 @@
   "prepare_for_meeting_content": "<ul><li>Come prepared with specific questions and focus areas</li><li>Be ready to screen share any relevant video footage</li><li>Join the meeting 10 minutes early to make sure your audio and video equipment are working before the meeting starts.</li></ul><p>Is your audio or video not working on the call? Visit our <a alt=\"video call troubleshooting\" href=\"{{troubleshoot_url}}\" target=\"_blank\">troubleshooting page</a> for helpful resources.</p>",
   "intro_already_booked": "You have already booked an introductory meeting with this instructor. Please continue your booking with {{instructorName}} <a class='font-bold underline' href='/{{slug}}'>here</a>.",
   "mobile_phone_in_use": "This mobile phone number is associated with another email address. Please use the linked email address or a different phone number.",
+  "invalid_mobile_phone": "Please enter a valid U.S. based mobile phone number.",
   "automated_event_reminder": "Text me automated event reminders. <span className='block text-xs'>Msg &amp; Data rates may apply.</span>",
   "trial_days_left": "You have $t(day, {\"count\": {{days}} }) left on your PRO trial",
   "day": "{{count}} day",

@@ -125,33 +125,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const meetingLink = booking?.references[0]?.meetingUrl;
 
           for (const attendee of attendees) {
-            const response = await getThetisUsers({
-              email: attendee.email,
-            });
-            const usersFound = await response?.json();
-            const { hasAuthorizedSms, mobilePhone } = usersFound?.data[0] || {};
+            if (attendee?.email) {
+              const response = await getThetisUsers({
+                email: attendee.email,
+              });
+              const usersFound = await response?.json();
+              const { hasAuthorizedSms, mobilePhone } = (usersFound?.data && usersFound?.data[0]) || {};
 
-            if (hasAuthorizedSms && mobilePhone && meetingLink && eventName) {
-              try {
-                const smsResponse = await sendSms({
-                  email: attendee.email,
-                  eventName,
-                  instructorName,
-                  meetingLink,
-                  mobilePhone,
-                  startTime: `${dayjs(booking.startTime)
-                    .tz("America/Los_Angeles")
-                    .format("dddd MMM D, h:mm A z")}`,
-                  timeToEvent: `${interval / 60} Hours`,
-                });
-                smsResponses.push(smsResponse);
-              } catch (e) {
-                logger.error(`failed to send event reminder sms to ${attendee?.email}`, e.message);
+              if (hasAuthorizedSms && mobilePhone && meetingLink && eventName) {
+                try {
+                  const smsResponse = await sendSms({
+                    email: attendee.email,
+                    eventName,
+                    instructorName,
+                    meetingLink,
+                    mobilePhone,
+                    startTime: `${dayjs(booking.startTime)
+                      .tz("America/Los_Angeles")
+                      .format("dddd MMM D, h:mm A z")}`,
+                    timeToEvent: `${interval / 60} Hours`,
+                  });
+                  smsResponses.push(smsResponse);
+                } catch (e) {
+                  logger.error(`failed to send event reminder sms to ${attendee?.email}`, e.message);
+                }
               }
+            } else {
+              smsResponses.push({
+                message: `attendee id(${attendee.id}) is missing email address for booking: ${booking?.title}`,
+              });
             }
           }
           return smsResponses;
         };
+
         const eventReminderSmsResponses = await sendEventReminderSms(attendees, booking);
         const eventReminderEmailsResponses = await sendEventReminderEmails(evt, eventAttendees);
         responses = [...responses, ...eventReminderEmailsResponses, ...eventReminderSmsResponses];
