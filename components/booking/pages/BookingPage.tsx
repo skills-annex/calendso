@@ -286,7 +286,6 @@ const BookingPage = (props: BookingPageProps) => {
     return formattedTime + ", " + dayjs(date).toDate().toLocaleString(i18n.language, { dateStyle: "full" });
   };
 
-  // make sure contact gets updated in hs
   const bookEvent = async (booking: BookingFormValues) => {
     if (typeof window !== "undefined" && window.heap) {
       (window.heap.identify as HeapIdentify)(booking.email);
@@ -444,12 +443,13 @@ const BookingPage = (props: BookingPageProps) => {
                         body: JSON.stringify({
                           email: booking.email,
                           properties: {
+                            birth_year: booking.birthYear,
                             email: booking.email,
                             firstname: booking.name.split(" ")[0],
                             lastname: booking.name.split(" ").slice(1).join(" "),
+                            mobilephone: hasAuthorizedSms ? mobilePhone : undefined,
                             n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
                             n1on1_instructor_last_purchased_image_url: props.eventType.users[0].avatar || "",
-                            birth_year: booking.birthYear,
                           },
                         }),
                       });
