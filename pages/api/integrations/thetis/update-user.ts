@@ -77,9 +77,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const DEFAULT_INTRO_EVENT_TYPE_SLUG = `intro-${currentUser.username}`;
     const INACTIVE_MODIFIER = "inactive";
 
-    const defaultEventTypeActive = eventTypes.find((et) => et.slug === DEFAULT_EVENT_TYPE_SLUG);
+    const defaultEventTypeActive = eventTypes.find(({ slug }) => slug === DEFAULT_EVENT_TYPE_SLUG);
     const defaultEventTypeInactive = eventTypes.find(
-      (et) => et.slug === `${DEFAULT_EVENT_TYPE_SLUG}-${INACTIVE_MODIFIER}`
+      ({ slug }) => slug === `${DEFAULT_EVENT_TYPE_SLUG}-${INACTIVE_MODIFIER}`
     );
 
     const defaultEventType = defaultEventTypeActive || defaultEventTypeInactive;
@@ -120,7 +120,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     logger.info("defaultIntroEventType", defaultIntroEventType);
 
     const introEventTypeSlug =
-      isActive && introductoryPrice && introductoryPrice > 0
+      isActive && introductoryPrice !== null && introductoryPrice !== undefined
         ? DEFAULT_INTRO_EVENT_TYPE_SLUG
         : `${DEFAULT_INTRO_EVENT_TYPE_SLUG}-${INACTIVE_MODIFIER}`;
 
@@ -132,7 +132,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
       update: {
         description: `1on1 Meeting with ${instructorPublicName}`,
-        price: introductoryPrice,
+        price: introductoryPrice || 0,
         slug: introEventTypeSlug,
         users: {
           connect: {
@@ -146,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title: "15 Min Intro Meeting",
         length: 15,
         description: `1on1 Meeting with ${instructorPublicName}`,
-        price: introductoryPrice,
+        price: introductoryPrice || 0,
         slug: introEventTypeSlug,
       },
     });
