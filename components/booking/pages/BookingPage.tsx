@@ -262,11 +262,13 @@ const BookingPage = (props: BookingPageProps) => {
   const handleMobilePhoneInputOnBlur = async (e: ChangeEvent<HTMLInputElement>) => {
     const phone = e.target.value;
 
-    if (isPossiblePhoneNumber(phone)) {
-      setMobilePhone(`${phone.replace(/[-()\s+]/g, "")}`);
-      setMobilePhoneError("");
-    } else {
-      setMobilePhoneError(t("invalid_mobile_phone"));
+    if (phone) {
+      if (isPossiblePhoneNumber(phone)) {
+        setMobilePhone(`${phone.replace(/[-()\s+]/g, "")}`);
+        setMobilePhoneError("");
+      } else {
+        setMobilePhoneError(t("invalid_mobile_phone"));
+      }
     }
   };
 
@@ -584,7 +586,6 @@ const BookingPage = (props: BookingPageProps) => {
                       <PhoneInput
                         name="mobilePhone"
                         international={true}
-                        defaultCountry="US"
                         placeholder={"+1 888 888 8888"}
                         id="mobilePhone"
                         onBlur={(e: ChangeEvent<HTMLInputElement>) => handleMobilePhoneInputOnBlur(e)}
