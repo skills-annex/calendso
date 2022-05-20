@@ -126,9 +126,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
           for (const attendee of attendees) {
             if (attendee?.email) {
-              const response = await getThetisUsers({
-                email: attendee.email,
-              });
+              const response = await getThetisUsers(attendee.email);
               const usersFound = await response?.json();
               const { hasAuthorizedSms, mobilePhone } = (usersFound?.data && usersFound?.data[0]) || {};
 
@@ -139,7 +137,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     eventName,
                     instructorName,
                     meetingLink,
-                    mobilePhone,
                     startTime: `${dayjs(booking.startTime)
                       .tz("America/Los_Angeles")
                       .format("dddd MMM D, h:mm A z")}`,

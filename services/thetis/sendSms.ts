@@ -5,13 +5,12 @@ export interface ISendSms {
   eventName?: string;
   instructorName?: string;
   meetingLink?: string;
-  mobilePhone?: string;
   startTime?: string;
   timeToEvent?: string;
 }
 
 const sendSms = async (sms: ISendSms) => {
-  const { email, mobilePhone } = sms;
+  const { email } = sms;
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
   const thetisApiKey = process.env.THETIS_API_KEY;
   if (!thetisSiteHost) {
@@ -24,13 +23,8 @@ const sendSms = async (sms: ISendSms) => {
     return;
   }
 
-  if (!mobilePhone) {
-    logger.error(`Unable to send SMS reminder to ${email || "unknown email"}, missing mobile phone number`);
-    return;
-  }
-
   if (!email) {
-    logger.error(`Unable to send SMS reminder to ${mobilePhone || "unknown number"}, missing email`);
+    logger.error(`Unable to send SMS reminder to ${email}, missing email`);
   }
 
   try {

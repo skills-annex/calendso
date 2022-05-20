@@ -260,11 +260,15 @@ const BookingPage = (props: BookingPageProps) => {
   };
 
   const handleMobilePhoneInputOnBlur = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (isPossiblePhoneNumber(`+1${e.target.value}`)) {
-      setMobilePhone(`1${e.target.value.replace(/[-()\s]/g, "")}`);
-      setMobilePhoneError("");
-    } else {
-      setMobilePhoneError(t("invalid_mobile_phone"));
+    const phone = e.target.value;
+
+    if (phone) {
+      if (isPossiblePhoneNumber(phone)) {
+        setMobilePhone(`${phone.replace(/[-()\s+]/g, "")}`);
+        setMobilePhoneError("");
+      } else {
+        setMobilePhoneError(t("invalid_mobile_phone"));
+      }
     }
   };
 
@@ -428,85 +432,77 @@ const BookingPage = (props: BookingPageProps) => {
                   handleSubmit={async (booking, e) => {
                     e?.preventDefault();
 
-                    if (isFree) {
-                      if (!booking?.birthYear) {
-                        setHasBirthYearError(true);
-                        return true;
-                      }
-                      setHasBirthYearError(false);
-
-                      await fetch("/api/hs-proxy", {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          email: booking.email,
-                          properties: {
-                            birth_year: booking.birthYear,
-                            email: booking.email,
-                            firstname: booking.name.split(" ")[0],
-                            lastname: booking.name.split(" ").slice(1).join(" "),
-                            mobilephone: hasAuthorizedSms ? mobilePhone : undefined,
-                            n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
-                            n1on1_instructor_last_purchased_image_url: props.eventType.users[0].avatar || "",
-                          },
-                        }),
-                      });
-
-                      const isThirteenOrYounger = dayjs().year() - Number(booking.birthYear) <= 13;
-                      if (isThirteenOrYounger) {
-                        router.push({
-                          pathname: "/success",
-                          query: {
-                            date,
-                            type: props.eventType.id,
-                            user: "",
-                            reschedule: false,
-                            name: "",
-                            email: "",
-                            location: "",
-                          },
-                        });
-                        return true;
-                      }
-                    }
-
                     const bookedIntro = await checkHasBookedIntro(booking?.email, props?.eventType?.id);
                     if (bookedIntro) {
                       setHasBookedIntro(true);
                     } else {
                       setHasBookedIntro(false);
-                      const response = await fetch(
-                        `/api/integrations/thetis/get-users?mobilePhone=${mobilePhone}`,
-                        {
-                          method: "GET",
+
+                      if (isFree) {
+                        if (!booking?.birthYear) {
+                          setHasBirthYearError(true);
+                          return true;
+                        }
+                        setHasBirthYearError(false);
+
+                        await fetch("/api/hs-proxy", {
+                          method: "POST",
                           headers: {
                             "Content-Type": "application/json",
                           },
+                          body: JSON.stringify({
+                            email: booking.email,
+                            properties: {
+                              birth_year: booking.birthYear,
+                              email: booking.email,
+                              firstname: booking.name.split(" ")[0],
+                              lastname: booking.name.split(" ").slice(1).join(" "),
+                              mobilephone: hasAuthorizedSms ? mobilePhone : undefined,
+                              n1on1_instructor_last_purchased: props.eventType.users[0].name || "",
+                              n1on1_instructor_last_purchased_image_url:
+                                props.eventType.users[0].avatar || "",
+                            },
+                          }),
+                        });
+
+                        const isThirteenOrYounger = dayjs().year() - Number(booking.birthYear) <= 13;
+                        if (isThirteenOrYounger) {
+                          router.push({
+                            pathname: "/success",
+                            query: {
+                              date,
+                              type: props.eventType.id,
+                              user: "",
+                              reschedule: false,
+                              name: "",
+                              email: "",
+                              location: "",
+                            },
+                          });
+                          return true;
                         }
-                      );
-                      const usersFound = await response.json();
-                      const noUsersFound = usersFound?.data.length === 0;
-                      const isExistingUser = usersFound.data.some(
-                        ({ email }: { email: string }) => email === booking?.email
-                      );
 
-                      const isValidMobilePhone = noUsersFound || isExistingUser;
+                        await fetch("/api/integrations/thetis/create-user", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            attendees: [{ email: booking.email, hasAuthorizedSms, mobilePhone, name }],
+                          }),
+                        });
+                      }
 
-                      if (isValidMobilePhone) {
+                      mobilePhone &&
                         setCookie("mobilePhone", mobilePhone, {
                           expires: dayjs().add(1, "hour").toDate(),
                         });
+                      hasAuthorizedSms &&
                         setCookie("hasAuthorizedSms", hasAuthorizedSms, {
                           expires: dayjs().add(1, "hour").toDate(),
                         });
-                        bookEvent(booking);
-                        return true;
-                      } else {
-                        setMobilePhoneError(t("mobile_phone_in_use"));
-                        return true;
-                      }
+                      bookEvent(booking);
+                      return true;
                     }
                   }}>
                   <div className="mb-4">
@@ -589,11 +585,10 @@ const BookingPage = (props: BookingPageProps) => {
                     <div className="mt-1">
                       <PhoneInput
                         name="mobilePhone"
-                        defaultCountry="US"
-                        placeholder={"(888) 888-8888"}
+                        international={true}
+                        placeholder={"+1 888 888 8888"}
                         id="mobilePhone"
                         onBlur={(e: ChangeEvent<HTMLInputElement>) => handleMobilePhoneInputOnBlur(e)}
-                        required
                       />
                     </div>
                   </div>

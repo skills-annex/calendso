@@ -1,11 +1,6 @@
 import logger from "@lib/logger";
 
-export type IGetThetisUser = {
-  email?: string;
-  mobilePhone?: string;
-};
-
-const getThetisUsers = async ({ email, mobilePhone }: IGetThetisUser) => {
+const getThetisUsers = async (email: string) => {
   const thetisSiteHost = process.env.THETIS_SITE_HOST;
   const thetisApiKey = process.env.THETIS_API_KEY;
   const encodedEmail = email ? encodeURIComponent(email) : "";
@@ -19,16 +14,13 @@ const getThetisUsers = async ({ email, mobilePhone }: IGetThetisUser) => {
     return;
   }
 
-  const result = await fetch(
-    `${thetisSiteHost}/api/users/get-users?email=${encodedEmail}&mobilePhone=${mobilePhone || ""}`,
-    {
-      method: "GET",
-      headers: {
-        "x-api-key": thetisApiKey,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const result = await fetch(`${thetisSiteHost}/api/users/get-users?email=${encodedEmail}`, {
+    method: "GET",
+    headers: {
+      "x-api-key": thetisApiKey,
+      "Content-Type": "application/json",
+    },
+  });
 
   return result;
 };
