@@ -586,6 +586,7 @@ const BookingPage = (props: BookingPageProps) => {
                       <PhoneInput
                         name="mobilePhone"
                         international={true}
+                        defaultCountry="US"
                         placeholder={"+1 888 888 8888"}
                         id="mobilePhone"
                         onBlur={(e: ChangeEvent<HTMLInputElement>) => handleMobilePhoneInputOnBlur(e)}
