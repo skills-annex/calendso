@@ -68,10 +68,10 @@ export default class AttendeeScheduledEmail {
       }),
       description: this.getTextBody(),
       duration: { minutes: dayjs(this.calEvent.endTime).diff(dayjs(this.calEvent.startTime), "minute") },
-      organizer: { name: this.calEvent.organizer.name, email: "questions@theskills.com" },
+      organizer: { name: this.calEvent.organizer.name, email: "support@theskills.com" },
       attendees: this.calEvent.attendees.map((attendee: Person) => ({
         name: attendee.name,
-        email: "questions@theskills.com",
+        email: "support@theskills.com",
       })),
       status: "CONFIRMED",
     });
@@ -89,7 +89,7 @@ export default class AttendeeScheduledEmail {
       },
       to: `${this.attendee.name} <${this.attendee.email}>`,
       from: `${this.calEvent.organizer.name} <${this.getMailerOptions().from}>`,
-      replyTo: "questions@theskills.com",
+      replyTo: "support@theskills.com",
       subject: `${this.calEvent.language("confirmed_event_type_subject", {
         eventType: this.calEvent.type,
         name: this.calEvent.team?.name || this.calEvent.organizer.name,

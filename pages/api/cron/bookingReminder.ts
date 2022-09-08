@@ -81,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         startTime: booking.startTime.toISOString(),
         endTime: booking.endTime.toISOString(),
         organizer: {
-          email: "questions@theskills.com",
+          email: "support@theskills.com",
           name,
           timeZone: user.timeZone,
         },

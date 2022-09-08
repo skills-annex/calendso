@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     startTime: bookingToDelete?.startTime.toString(),
     endTime: bookingToDelete?.endTime.toString(),
     organizer: {
-      email: "questions@theskills.com",
+      email: "support@theskills.com",
       name: organizer.name ?? "Nameless",
       timeZone: organizer.timeZone,
     },
@@ -155,7 +155,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       startTime: bookingToDelete.startTime.toISOString(),
       endTime: bookingToDelete.endTime.toISOString(),
       organizer: {
-        email: bookingToDelete.user?.email ?? "questions@theskills.com",
+        email: bookingToDelete.user?.email ?? "support@theskills.com",
         name: bookingToDelete.user?.name ?? "no user",
         timeZone: bookingToDelete.user?.timeZone ?? "",
       },

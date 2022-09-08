@@ -19,7 +19,7 @@ export default class EventReminderEmail extends AttendeeScheduledEmail {
     return {
       to: `${this.attendee.name} <${this.attendee.email}>`,
       from: `info@theskills.com <${this.getMailerOptions().from}>`,
-      replyTo: "questions@theskills.com",
+      replyTo: "support@theskills.com",
       subject: `Event Reminder: ${this.calEvent.type}`,
       html: this.getHtmlBody(),
       text: this.getTextBody(),
